@@ -2,7 +2,7 @@
 
 // src/components/InvoiceEditor.tsx
 "use client";
-
+import { generateInvoicePDF } from "@/lib/pdfGeneratorWithPageBreaks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
@@ -146,86 +146,55 @@ export default function InvoiceEditor({
   };
 
   const handleGeneratePdf = async () => {
-    setIsGeneratingPdf(true);
-    const toastId = toast.loading("Generating PDF...", {
-      position: "top-right",
+  setIsGeneratingPdf(true);
+  const toastId = toast.loading("Generating PDF...", {
+    position: "top-right",
+  });
+
+  try {
+    // Prepare sections with calculations
+    const sectionsWithCalculations = sections.map((section) => ({
+      ...section,
+      calculations: {
+        subtotal: calculateSubtotal(section.items),
+        vatDetails: calculateVAT(section.items),
+        total: calculateTotal(section.items),
+      },
+    }));
+
+    // Use new PDF generator with smart page breaks
+    const doc = await generateInvoicePDF(
+      {
+        ...projectDetails,
+        richTextHTML: stateToHTML(
+          projectDetails.editorState.getCurrentContent()
+        ),
+      },
+      sectionsWithCalculations
+    );
+
+    // Save the PDF
+    doc.save(
+      `${projectDetails.projectAddress}-${projectDetails.invoiceNumber}.pdf`
+    );
+
+    toast.update(toastId, {
+      render: `PDF generated for ${projectDetails.clientName}`,
+      type: "success",
+      isLoading: false,
+      autoClose: 3000,
     });
-
-    try {
-      if (typeof window !== "undefined" && detachedDivRef.current) {
-        const tempDiv = document.createElement("div");
-        document.body.appendChild(tempDiv);
-
-        const doc = new jsPDF({
-          format: "a4",
-          unit: "px",
-          orientation: "p",
-        });
-
-        tempDiv.innerHTML = ReactDOMServer.renderToString(
-          <ReportTemplate
-            projectDetails={{
-              ...projectDetails,
-              richTextHTML: stateToHTML(
-                projectDetails.editorState.getCurrentContent()
-              ),
-            }}
-            sections={sections.map((section) => ({
-              ...section,
-              calculations: {
-                subtotal: calculateSubtotal(section.items),
-                vatDetails: calculateVAT(section.items),
-                total: calculateTotal(section.items),
-              },
-            }))}
-          />
-        );
-
-        await new Promise<void>((resolve) => {
-          doc.html(tempDiv, {
-            width: 595,
-            height: 842,
-            html2canvas: {
-              scale: 0.75,
-              useCORS: true,
-            },
-            async callback(doc) {
-              try {
-                await doc.save(
-                  `${projectDetails.projectAddress}-${projectDetails.invoiceNumber}.pdf`
-                );
-                document.body.removeChild(tempDiv);
-                toast.update(toastId, {
-                  render: `PDF generated for ${projectDetails.clientName}`,
-                  type: "success",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-              } catch (error) {
-                toast.update(toastId, {
-                  render: `Failed to save PDF: ${error.message}`,
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 5000,
-                });
-              } finally {
-                resolve();
-              }
-            },
-          });
-        });
-      }
-    } catch (error: any) {
-      toast.update(toastId, {
-        render: `Failed to generate PDF: ${error.message}`,
-        type: "error",
-        isLoading: false,
-        autoClose: 5000,
-      });
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
+  } catch (error: any) {
+    toast.update(toastId, {
+      render: `Failed to generate PDF: ${error.message}`,
+      type: "error",
+      isLoading: false,
+      autoClose: 5000,
+    });
+  } finally {
+    setIsGeneratingPdf(false);
+  }
+};
   const handleEditorChange = (editorState: EditorState) => {
     setProjectDetails((prev) => ({
       ...prev,

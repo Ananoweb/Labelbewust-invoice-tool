@@ -9,7 +9,7 @@ import { Button } from "./ui/button";
 import { Plus, Trash2, Download, Upload, Save, X } from "lucide-react";
 import jsPDF from "jspdf";
 import ReportTemplate from "./ReportTemplate";
-
+import { generateInvoicePDF } from "@/lib/pdfGeneratorWithPageBreaks";
 import { EditorState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { stateToHTML } from "draft-js-export-html";
@@ -374,9 +374,8 @@ export default function InvoiceGenerator() {
 
     return (
       <div
-        className={`fixed inset-0 z-50 flex items-center justify-center ${
-          isGeneratingPdf ? "bg-black bg-opacity-70" : "bg-black bg-opacity-50"
-        }`}
+        className={`fixed inset-0 z-50 flex items-center justify-center ${isGeneratingPdf ? "bg-black bg-opacity-70" : "bg-black bg-opacity-50"
+          }`}
       >
         <div className="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
@@ -401,73 +400,33 @@ export default function InvoiceGenerator() {
       }
     }
   };
-  const generatePdfForInvoice = async (invoiceData: {
-    projectDetails: ProjectDetails;
-    sections: Section[];
-  }) => {
+  const handleGeneratePdf = async () => {
     setIsGeneratingPdf(true);
     const toastId = toast.loading("Generating PDF...", {
       position: "top-right",
     });
 
     try {
-      if (typeof window !== "undefined") {
-        const tempDiv = document.createElement("div");
-        document.body.appendChild(tempDiv);
+      // Use new PDF generator with smart page breaks
+      const doc = await generateInvoicePDF(
+        {
+          ...projectDetails,
+          richTextHTML: convertRichTextToHTML(),
+        },
+        calculatedSections
+      );
 
-        const doc = new jsPDF({
-          format: "a4",
-          unit: "px",
-          orientation: "p",
-        });
+      // Save the PDF
+      doc.save(
+        `${projectDetails.projectAddress}-${projectDetails.invoiceNumber}.pdf`
+      );
 
-        tempDiv.innerHTML = ReactDOMServer.renderToString(
-          <ReportTemplate
-            projectDetails={{
-              ...invoiceData.projectDetails,
-              richTextHTML: invoiceData.projectDetails.richTextHTML || "",
-            }}
-            sections={invoiceData.sections.map((section) => ({
-              ...section,
-              calculations: calculateSectionTotals(section.items),
-            }))}
-          />
-        );
-
-        await new Promise<void>((resolve) => {
-          doc.html(tempDiv, {
-            width: 595,
-            height: 842,
-            html2canvas: {
-              scale: 0.75,
-              useCORS: true,
-            },
-            async callback(doc) {
-              try {
-                await doc.save(
-                  `${invoiceData.projectDetails.projectAddress}-${invoiceData.projectDetails.invoiceNumber}.pdf`
-                );
-                document.body.removeChild(tempDiv);
-                toast.update(toastId, {
-                  render: `PDF generated for ${invoiceData.projectDetails.clientName}`,
-                  type: "success",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-              } catch (error) {
-                toast.update(toastId, {
-                  render: `Failed to save PDF: ${error.message}`,
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 5000,
-                });
-              } finally {
-                resolve();
-              }
-            },
-          });
-        });
-      }
+      toast.update(toastId, {
+        render: `PDF generated for ${projectDetails.clientName}`,
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
     } catch (error) {
       toast.update(toastId, {
         render: `Failed to generate PDF: ${error.message}`,
