@@ -622,78 +622,78 @@ export default function InvoiceGenerator() {
   //     });
   //   }
   // };
-  const handleGeneratePdf = async () => {
-    setIsGeneratingPdf(true);
-    const toastId = toast.loading("Generating PDF...", {
-      position: "top-right",
-    });
+  // const handleGeneratePdf = async () => {
+  //   setIsGeneratingPdf(true);
+  //   const toastId = toast.loading("Generating PDF...", {
+  //     position: "top-right",
+  //   });
 
-    try {
-      if (typeof window !== "undefined" && detachedDivRef.current) {
-        const tempDiv = document.createElement("div");
-        document.body.appendChild(tempDiv);
+  //   try {
+  //     if (typeof window !== "undefined" && detachedDivRef.current) {
+  //       const tempDiv = document.createElement("div");
+  //       document.body.appendChild(tempDiv);
 
-        const doc = new jsPDF({
-          format: "a4",
-          unit: "px",
-          orientation: "p",
-        });
+  //       const doc = new jsPDF({
+  //         format: "a4",
+  //         unit: "px",
+  //         orientation: "p",
+  //       });
 
-        tempDiv.innerHTML = ReactDOMServer.renderToString(
-          <ReportTemplate
-            projectDetails={{
-              ...projectDetails,
-              richTextHTML: convertRichTextToHTML(),
-            }}
-            sections={calculatedSections}
-          />
-        );
+  //       tempDiv.innerHTML = ReactDOMServer.renderToString(
+  //         <ReportTemplate
+  //           projectDetails={{
+  //             ...projectDetails,
+  //             richTextHTML: convertRichTextToHTML(),
+  //           }}
+  //           sections={calculatedSections}
+  //         />
+  //       );
 
-        await new Promise<void>((resolve) => {
-          doc.html(tempDiv, {
-            width: 595,
-            height: 842,
-            html2canvas: {
-              scale: 0.75,
-              useCORS: true,
-            },
-            async callback(doc) {
-              try {
-                await doc.save(
-                  `${projectDetails.projectAddress}-${projectDetails.invoiceNumber}.pdf`
-                );
-                document.body.removeChild(tempDiv);
-                toast.update(toastId, {
-                  render: `PDF generated for ${projectDetails.clientName}`,
-                  type: "success",
-                  isLoading: false,
-                  autoClose: 3000,
-                });
-              } catch (error) {
-                toast.update(toastId, {
-                  render: `Failed to save PDF: ${error.message}`,
-                  type: "error",
-                  isLoading: false,
-                  autoClose: 5000,
-                });
-              } finally {
-                resolve();
-              }
-            },
-          });
-        });
-      }
-    } catch (error) {
-      toast.update(toastId, {
-        render: `Failed to generate PDF: ${error.message}`,
-        type: "error",
-        isLoading: false,
-        autoClose: 5000,
-      });
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
+  //       await new Promise<void>((resolve) => {
+  //         doc.html(tempDiv, {
+  //           width: 595,
+  //           height: 842,
+  //           html2canvas: {
+  //             scale: 0.75,
+  //             useCORS: true,
+  //           },
+  //           async callback(doc) {
+  //             try {
+  //               await doc.save(
+  //                 `${projectDetails.projectAddress}-${projectDetails.invoiceNumber}.pdf`
+  //               );
+  //               document.body.removeChild(tempDiv);
+  //               toast.update(toastId, {
+  //                 render: `PDF generated for ${projectDetails.clientName}`,
+  //                 type: "success",
+  //                 isLoading: false,
+  //                 autoClose: 3000,
+  //               });
+  //             } catch (error) {
+  //               toast.update(toastId, {
+  //                 render: `Failed to save PDF: ${error.message}`,
+  //                 type: "error",
+  //                 isLoading: false,
+  //                 autoClose: 5000,
+  //               });
+  //             } finally {
+  //               resolve();
+  //             }
+  //           },
+  //         });
+  //       });
+  //     }
+  //   } catch (error) {
+  //     toast.update(toastId, {
+  //       render: `Failed to generate PDF: ${error.message}`,
+  //       type: "error",
+  //       isLoading: false,
+  //       autoClose: 5000,
+  //     });
+  //   } finally {
+  //     setIsGeneratingPdf(false);
+  //   }
+  // };
 
   // Initialize the ref in useEffect to avoid server-side rendering issues
   useEffect(() => {
