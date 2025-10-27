@@ -84,7 +84,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         <img src="${headerShapeSrc}" alt="Banner" style="height: 88px; width: 288px; position: absolute; top: 0; left: -8px;" />
         <img src="${headerLogoSrc}" alt="Banner" style="height: 64px; width: 160px; object-fit: contain; position: absolute; top: 8px; left: 0;" />
       </header>
-      <section style="width: 100%; max-width: 595px; height: 700px;">
+      <section style="width: 100%; max-width: 595px; height: 100%;">
         <div>
           ${projectDetails.headerImages && projectDetails.headerImages.length > 0
             ? `<div style="display: flex;">
@@ -164,12 +164,12 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             </ul>
           </div>
           <div style="position: relative;">
-            <img src="${triSquareSrc}" alt="triSquareImage" style="width: 500px; object-fit: cover; position: absolute; right: -0.15rem; bottom: -12px;" />
-            <img src="${squareAngleSrc}" alt="squareAngleImage" style="height: 96px; width: 96px; object-fit: cover; position: absolute; right: -8px; bottom: 24px;" />
-            <span style="font-weight: bold; font-size: 11px; position: absolute; left: 144px; bottom: 12px; color: white;">
+            <img src="${triSquareSrc}" alt="triSquareImage" style="width: 500px; object-fit: cover; position: absolute; right: -0.15rem; bottom: -12px; z-index: 20;" />
+            <img src="${squareAngleSrc}" alt="squareAngleImage" style="height: 96px; width: 96px; object-fit: cover; position: absolute; right: -8px; bottom: -30px;" />
+            <span style="font-weight: bold; font-size: 11px; position: absolute; left: 144px; bottom: 12px; color: white; z-index: 30;">
               Labelbewust
             </span>
-            <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 12px; color: white;">
+            <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 12px; color: white; z-index: 30;">
               Een aannemer op wie je kunt bouwen
             </span>
           </div>
@@ -177,10 +177,10 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
       </section>
 
       <!-- Second Page -->
-      <header style="height: 80px; max-width: 595px; background-color: white; position: relative; margin-top: 64px;">
+      <header style="height: 80px; max-width: 595px; background-color: white; position: relative; margin-top: 24px;">
         <img src="${headerWhiteLogoSrc}" alt="Banner" style="height: 56px; width: 160px; position: absolute; top: 8px; left: 16px;" />
         <img src="${triSquareRevSrc}" alt="Banner" style="height: 80px; width: 80px; object-fit: contain; position: absolute; top: -8px; right: -8px;" />
-        <span style="color: #257044; font-size: 30px; font-weight: bold; position: absolute; right: 112px; top: 24px; letter-spacing: 0.05em;">
+        <span style="color: #257044; font-size: 30px; font-weight: bold; position: absolute; left: 220px; top: 30px; letter-spacing: 0.05em;">
           OFFERTE
         </span>
       </header>
@@ -199,7 +199,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             Totaal renovatie ${projectDetails.projectAddress}
           </p>
         </div>
-        <div style="padding: 8px 24px; min-height: 370px;">
+        <div style="padding-top: 8px; padding-right: 24px; padding-bottom: 0; padding-left: 24px; min-height: 425px;">
           <h1 style="font-size: 9px; font-weight: bold; color: #111827; margin: 0 0 4px 0;">
             Werkzaamheden opgenomen in deze offerte
           </h1>
@@ -225,7 +225,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             </div>
           </div>
         </div>
-        <div style="position: relative;">
+        <div style="position: relative">
           <img src="${triSquareFooterSrc}" alt="Banner" style="object-fit: cover; height: auto; width: 80%; margin-left: -16px;" />
         </div>
       </section>
@@ -255,7 +255,7 @@ export const generateInvoicePDF = async (
    * Check if we need to add a new page
    * Returns true if a new page was added
    */
-  const checkAddPage = (requiredHeight: number, addHeader: boolean = true): boolean => {
+  const checkAddPage = (requiredHeight: number, addHeader: boolean = false): boolean => {
     const availableSpace = pageHeight - currentY - margin;
 
     if (requiredHeight > availableSpace) {
@@ -276,6 +276,7 @@ export const generateInvoicePDF = async (
    */
   const addTablePageHeader = async () => {
     const headerHeight = 80;
+    const headerStartY = 0; // Start header at top of page
 
     // Add white background
     doc.setFillColor(255, 255, 255);
@@ -284,11 +285,11 @@ export const generateInvoicePDF = async (
     try {
       // Add white logo
       const logoUrl = await getImageDataUrl(headerWhiteLogo);
-      doc.addImage(logoUrl, 'PNG', margin + 4, currentY + 2, 140, 56);
+      doc.addImage(logoUrl, 'PNG', margin + 4, headerStartY + 8, 140, 56);
 
       // Add triangle decoration
       const triangleUrl = await getImageDataUrl(triSquareRevImage);
-      doc.addImage(triangleUrl, 'PNG', pageWidth - 82, currentY - 2, 80, 80);
+      doc.addImage(triangleUrl, 'PNG', pageWidth - 75, headerStartY - 8, 80, 80);
     } catch (error) {
       console.warn('Could not load header images:', error);
     }
@@ -297,9 +298,9 @@ export const generateInvoicePDF = async (
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(24);
     doc.setTextColor(37, 112, 68); // #257044
-    doc.text('OFFERTE', pageWidth - 228, currentY + 36);
+    doc.text('OFFERTE', pageWidth - 228, headerStartY + 42);
 
-    currentY += headerHeight;
+    currentY = headerHeight + margin; // Set currentY to after header plus margin
   };
 
   // ========================================================================
@@ -418,7 +419,7 @@ export const generateInvoicePDF = async (
         4: { cellWidth: 80, halign: 'left', textColor: [54, 169, 101] },
         5: { cellWidth: 45, halign: 'left', textColor: [54, 169, 101] },
       },
-      margin: { left: margin, right: margin, top: margin, bottom: margin },
+      margin: { left: margin, right: margin, top: 10, bottom: margin },
       pageBreak: 'auto',
       rowPageBreak: 'avoid', // THIS IS THE KEY - prevents rows from splitting
       showHead: 'everyPage',
