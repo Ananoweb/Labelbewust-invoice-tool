@@ -178,6 +178,9 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
       </section>
       </div>
 
+      <!-- Force page break before second page -->
+      <div style="page-break-before: always; page-break-after: always;"></div>
+
       <!-- Second Page - EXACTLY 842px -->
       <div style="width: 595px; height: 842px; overflow: hidden; position: relative; page-break-after: always;">
       <header style="height: 80px; max-width: 595px; background-color: white; position: relative;">
