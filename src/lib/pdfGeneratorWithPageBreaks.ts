@@ -79,12 +79,13 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
 
   return `
     <div style="font-family: 'Mulish', Arial, sans-serif; width: 595px; margin: 0; padding: 0;">
-      <!-- First Page -->
+      <!-- First Page - EXACTLY 842px -->
+      <div style="width: 595px; height: 842px; overflow: hidden; position: relative; page-break-after: always;">
       <header style="height: 80px; max-width: 595px; background-color: #36a965; position: relative;">
         <img src="${headerShapeSrc}" alt="Banner" style="height: 88px; width: 288px; position: absolute; top: 0; left: -8px;" />
         <img src="${headerLogoSrc}" alt="Banner" style="height: 64px; width: 160px; object-fit: contain; position: absolute; top: 8px; left: 0;" />
       </header>
-      <section style="width: 100%; max-width: 595px; height: 100%;">
+      <section style="width: 100%; max-width: 595px; height: calc(842px - 80px);">
         <div>
           ${projectDetails.headerImages && projectDetails.headerImages.length > 0
             ? `<div style="display: flex;">
@@ -175,16 +176,18 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           </div>
         </div>
       </section>
+      </div>
 
-      <!-- Second Page -->
-      <header style="height: 80px; max-width: 595px; background-color: white; position: relative; margin-top: 24px;">
+      <!-- Second Page - EXACTLY 842px -->
+      <div style="width: 595px; height: 842px; overflow: hidden; position: relative; page-break-after: always;">
+      <header style="height: 80px; max-width: 595px; background-color: white; position: relative;">
         <img src="${headerWhiteLogoSrc}" alt="Banner" style="height: 56px; width: 160px; position: absolute; top: 8px; left: 16px;" />
-        <img src="${triSquareRevSrc}" alt="Banner" style="height: 80px; width: 80px; object-fit: contain; position: absolute; top: -8px; right: -8px;" />
+        <img src="${triSquareRevSrc}" alt="Banner" style="height: 80px; width: 80px; object-fit: contain; position: absolute; top: -4px; right: -8px;" />
         <span style="color: #257044; font-size: 30px; font-weight: bold; position: absolute; left: 220px; top: 30px; letter-spacing: 0.05em;">
           OFFERTE
         </span>
       </header>
-      <section style="max-width: 595px; width: 100%; background-color: white; padding-top: 8px; word-break: break-all; position: relative;">
+      <section style="max-width: 595px; width: 100%; background-color: white; padding-top: 8px; word-break: break-all; position: relative; height: calc(842px - 80px);">
         <div style="border: 2px dashed #22c55e; padding: 16px; max-width: 350px; margin-left: 24px;">
           <h2 style="color: #15803d; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;">
             ${projectDetails.clientName}
@@ -229,6 +232,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           <img src="${triSquareFooterSrc}" alt="Banner" style="object-fit: cover; height: auto; width: 80%; margin-left: -16px;" />
         </div>
       </section>
+      </div>
     </div>
   `;
 };
@@ -337,7 +341,18 @@ export const generateInvoicePDF = async (
   // PAGE 3+: TABLES WITH SMART PAGE BREAKS
   // ========================================================================
 
-  doc.addPage();
+  // The doc.html() with page-break-after on page 2 creates a blank page 3
+  // Check total pages - if > 2, we already have a blank page 3
+  const totalPages = doc.getNumberOfPages();
+
+  if (totalPages === 2) {
+    // Only add a new page if doc.html didn't already create one
+    doc.addPage();
+  } else if (totalPages > 2) {
+    // If there's already a page 3 (blank from page-break-after), go to it
+    doc.setPage(3);
+  }
+
   currentY = margin;
   await addTablePageHeader();
 
