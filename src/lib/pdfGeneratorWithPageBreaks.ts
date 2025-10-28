@@ -101,7 +101,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         </div>
         <!-- Project Details -->
         <div style="display: flex; word-break: break-all; padding-left: 8px;">
-          <div style="flex: 1; background-color: white; padding: 0 16px 0 16px; height: 231px;">
+          <div style="flex: 1; background-color: white; padding: 0 16px 0 16px; height: 231px; border: 1px solid;">
             <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0 0 8px 0;">Project adres</h4>
             <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
               ${projectDetails.projectAddress}
