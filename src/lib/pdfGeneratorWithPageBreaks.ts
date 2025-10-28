@@ -101,7 +101,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         </div>
         <!-- Project Details -->
         <div style="display: flex; word-break: break-all; padding-left: 8px;">
-          <div style="flex: 1; background-color: white; padding: 16px 16px 48px 16px;">
+          <div style="flex: 1; background-color: white; padding: 0 16px 0 16px; height: 231px;">
             <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0 0 8px 0;">Project adres</h4>
             <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
               ${projectDetails.projectAddress}
@@ -112,7 +112,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             <p style="font-size: 12px; color: #374151; margin: 0; padding: 0;">${projectDetails.email}</p>
             <p style="font-size: 12px; letter-spacing: 0.05em; color: #374151; margin: 0; padding: 0;">${projectDetails.phone}</p>
           </div>
-          <div style="flex: 1; background-color: #f9f9f9; padding: 16px 16px 48px 24px;">
+          <div style="flex: 1; background-color: #f9f9f9; padding: 0 16px 0 24px; height: 231px;">
             <h2 style="color: black; font-size: 20px; font-weight: bold; line-height: 24px; margin: 16px 0 24px 0; text-align: center;">
               Project details
             </h2>
