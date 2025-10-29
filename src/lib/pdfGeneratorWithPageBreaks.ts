@@ -186,7 +186,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
       <header style="height: 80px; max-width: 595px; background-color: white; position: relative;">
         <img src="${headerWhiteLogoSrc}" alt="Banner" style="height: 56px; width: 160px; position: absolute; top: 8px; left: 16px;" />
         <img src="${triSquareRevSrc}" alt="Banner" style="height: 80px; width: 80px; object-fit: contain; position: absolute; top: -4px; right: -8px;" />
-        <span style="color: #257044; font-size: 30px; font-weight: bold; position: absolute; left: 220px; top: 30px; letter-spacing: 0.05em;">
+        <span style="color: #257044; font-size: 30px; font-weight: bold; position: absolute; left: 280px; top: 2px; letter-spacing: 0.05em;">
           OFFERTE
         </span>
       </header>
@@ -255,7 +255,7 @@ export const generateInvoicePDF = async (
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 20;
+  const margin = 10;
   let currentY = margin;
 
   /**
@@ -292,20 +292,20 @@ export const generateInvoicePDF = async (
     try {
       // Add white logo
       const logoUrl = await getImageDataUrl(headerWhiteLogo);
-      doc.addImage(logoUrl, 'PNG', margin + 4, headerStartY + 8, 140, 56);
+      doc.addImage(logoUrl, 'PNG', margin + 0, headerStartY + 8, 140, 40);
 
       // Add triangle decoration
       const triangleUrl = await getImageDataUrl(triSquareRevImage);
-      doc.addImage(triangleUrl, 'PNG', pageWidth - 75, headerStartY - 8, 80, 80);
+      doc.addImage(triangleUrl, 'PNG', pageWidth - 60, headerStartY - 8, 70, 70);
     } catch (error) {
       console.warn('Could not load header images:', error);
     }
 
     // Add "OFFERTE" text
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(24);
+    doc.setFontSize(30);
     doc.setTextColor(37, 112, 68); // #257044
-    doc.text('OFFERTE', pageWidth - 228, headerStartY + 42);
+    doc.text('OFFERTE', pageWidth /2, headerStartY + 42);
 
     currentY = headerHeight + margin; // Set currentY to after header plus margin
   };
