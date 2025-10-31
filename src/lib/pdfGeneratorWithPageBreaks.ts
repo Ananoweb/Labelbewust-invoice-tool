@@ -138,9 +138,9 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         </div>
         <!-- Banner Section -->
         <div style="position: relative;">
-          <img src="${bannerSrc}" alt="Banner" style="height: 310px; width: 100%; object-fit: cover;" />
+          <img src="${bannerSrc}" alt="Banner" style="height: 320px; width: 100%; object-fit: cover;" />
           <div style="position: absolute; left: 16px; top: 48px;">
-            <h2 style="font-weight: bold; font-size: 20px; margin: 0 0 12px 0; color: white;">
+            <h2 style="font-weight: bold; font-size: 20px; margin-bottom: 4px; color: white;">
               De aannemer van groot Amsterdam
             </h2>
             <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; font-size: 12px; margin: 0;">
@@ -165,7 +165,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             </ul>
           </div>
           <div style="position: relative;">
-            <img src="${triSquareSrc}" alt="triSquareImage" style="width: 500px; object-fit: cover; position: absolute; right: -0.15rem; bottom: -12px; z-index: 20;" />
+            <img src="${triSquareSrc}" alt="triSquareImage" style="width: 500px; object-fit: cover; position: absolute; right: -0.15rem; bottom: -14px; z-index: 20;" />
             <img src="${squareAngleSrc}" alt="squareAngleImage" style="height: 96px; width: 96px; object-fit: cover; position: absolute; right: -8px; bottom: -30px;" />
             <span style="font-weight: bold; font-size: 11px; position: absolute; left: 144px; bottom: 12px; color: white; z-index: 30;">
               Labelbewust
@@ -292,7 +292,7 @@ export const generateInvoicePDF = async (
     try {
       // Add white logo
       const logoUrl = await getImageDataUrl(headerWhiteLogo);
-      doc.addImage(logoUrl, 'PNG', margin + 0, headerStartY + 8, 140, 40);
+      doc.addImage(logoUrl, 'PNG', margin + 0, headerStartY + 8, 120, 42);
 
       // Add triangle decoration
       const triangleUrl = await getImageDataUrl(triSquareRevImage);
