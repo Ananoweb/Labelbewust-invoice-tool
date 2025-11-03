@@ -100,7 +100,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           }
         </div>
         <!-- Project Details -->
-        <div style="display: flex; word-break: break-all; padding-left: 8px;">
+        <div style="display: flex;  padding-left: 8px;">
           <div style="flex: 1; background-color: white; padding: 0 16px 0 16px; height: 231px;">
             <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0 0 8px 0;">Project adres</h4>
             <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
@@ -119,29 +119,29 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
                 <div style="color: black; font-size: 11px; font-weight: bold;">Datum</div>
-                <div style="font-size: 11px; color: #36a965; letter-spacing: 0.05em;">${projectDetails.date}</div>
+                <div style="font-size: 11px; color: #36a965; letter-spacing: 0.05em; word-wrap: break-word; white-space: normal;">${projectDetails.date}</div>
               </div>
               <div>
                 <div style="color: black; font-size: 11px; font-weight: bold;">Offertenummer</div>
-                <div style="font-size: 11px; color: #36a965;">${projectDetails.invoiceNumber}</div>
+                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${projectDetails.invoiceNumber}</div>
               </div>
               <div>
                 <div style="color: black; font-size: 11px; font-weight: bold;">Kenmerk</div>
-                <div style="font-size: 11px; color: #36a965;">Totaal renovatie ${projectDetails.projectAddress}</div>
+                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">Totaal renovatie ${projectDetails.projectAddress}</div>
               </div>
               <div>
                 <div style="color: black; font-size: 11px; font-weight: bold;">Geldigheid</div>
-                <div style="font-size: 11px; color: #36a965;">${projectDetails.validity}</div>
+                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${projectDetails.validity}</div>
               </div>
             </div>
           </div>
         </div>
         <!-- Banner Section -->
         <div style="position: relative;">
-          <img src="${bannerSrc}" alt="Banner" style="height: 310px; width: 100%; object-fit: cover;" />
+          <img src="${bannerSrc}" alt="Banner" style="height: 330px; width: 100%; object-fit: cover;" />
           <div style="position: absolute; left: 16px; top: 48px;">
-            <h2 style="font-weight: bold; font-size: 20px; margin: 0 0 12px 0; color: white;">
-              De aannemer van groot Amsterdam
+            <h2 style="font-weight: bold; font-size: 20px; margin-bottom: 4px; color: white;">
+               De aannemer van Nederland
             </h2>
             <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; font-size: 12px; margin: 0;">
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
@@ -165,12 +165,12 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             </ul>
           </div>
           <div style="position: relative;">
-            <img src="${triSquareSrc}" alt="triSquareImage" style="width: 500px; object-fit: cover; position: absolute; right: -0.15rem; bottom: -12px; z-index: 20;" />
-            <img src="${squareAngleSrc}" alt="squareAngleImage" style="height: 96px; width: 96px; object-fit: cover; position: absolute; right: -8px; bottom: -30px;" />
-            <span style="font-weight: bold; font-size: 11px; position: absolute; left: 144px; bottom: 12px; color: white; z-index: 30;">
+            <img src="${triSquareSrc}" alt="triSquareImage" style="width: 500px; object-fit: cover; position: absolute; right: -0.15rem; bottom: -10px; z-index: 20;" />
+            <img src="${squareAngleSrc}" alt="squareAngleImage" style="height: 90px; width: 96px; object-fit: cover; position: absolute; right: -8px; bottom: -10px;" />
+            <span style="font-weight: bold; font-size: 11px; position: absolute; left: 144px; bottom: 15px; color: white; z-index: 30;">
               Labelbewust
             </span>
-            <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 12px; color: white; z-index: 30;">
+            <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 15px; color: white; z-index: 30;">
               Een aannemer op wie je kunt bouwen
             </span>
           </div>
@@ -231,8 +231,13 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             </div>
           </div>
         </div>
-        <div style="position: relative">
+        <div style="position: absolute; bottom: -5px; left: 0; width: 100%; z-index: 20;">
           <img src="${triSquareFooterSrc}" alt="Banner" style="object-fit: cover; height: auto; width: 80%; margin-left: -16px;" />
+          <div style="width: 80%; display: flex; gap: 55px; font-weight: bold; font-size: 11px; position: absolute; color: white; z-index: 30; bottom: 6px; padding-left: 20px; font-size: 14px>
+            <p>Renovatie</p>
+            <p>Verduurzaming</p>
+            <p>Nieuwbouw</p>
+          </div>
         </div>
       </section>
       </div>
@@ -292,7 +297,7 @@ export const generateInvoicePDF = async (
     try {
       // Add white logo
       const logoUrl = await getImageDataUrl(headerWhiteLogo);
-      doc.addImage(logoUrl, 'PNG', margin + 0, headerStartY + 8, 140, 40);
+      doc.addImage(logoUrl, 'PNG', margin + 0, headerStartY + 8, 120, 42);
 
       // Add triangle decoration
       const triangleUrl = await getImageDataUrl(triSquareRevImage);
