@@ -93,7 +93,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
                   `<img src="${image}" alt="Header Image" style="width: 200px; flex: 1; height: 200px; object-fit: cover;" />`
                 ).join('')}
               </div>`
-            : `<div style="display: flex; border: 2px solid;">
+            : `<div style="display: flex;">
                 <img src="${noImageSrc}" alt="noImage" style="width: 200px; flex: 1; height: 200px; object-fit: cover;" />
                 <img src="${noImageSrc}" alt="noImage" style="width: 200px; flex: 1; height: 200px; object-fit: cover;" />
               </div>`
@@ -231,8 +231,13 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             </div>
           </div>
         </div>
-        <div style="position: absolute; bottom: -5px; left: 0; width: 100%;">
+        <div style="position: absolute; bottom: -5px; left: 0; width: 100%; z-index: 20;">
           <img src="${triSquareFooterSrc}" alt="Banner" style="object-fit: cover; height: auto; width: 80%; margin-left: -16px;" />
+          <div style="width: 80%; display: flex; gap: 55px; font-weight: bold; font-size: 11px; position: absolute; color: white; z-index: 30; bottom: 6px; padding-left: 20px; font-size: 14px>
+            <p>Renovatie</p>
+            <p>Verduurzaming</p>
+            <p>Nieuwbouw</p>
+          </div>
         </div>
       </section>
       </div>
