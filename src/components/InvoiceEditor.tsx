@@ -517,6 +517,7 @@ export default function InvoiceEditor({
               Projectadres
             </label>
             <Input
+              placeholder="Vossiusstraat 39-H, Amsterdam"
               value={projectDetails.projectAddress}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -531,6 +532,7 @@ export default function InvoiceEditor({
               Klantnaam
             </label>
             <Input
+              placeholder="Sanin Saracevic"
               value={projectDetails.clientName}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -543,6 +545,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">E-mail</label>
             <Input
+              placeholder="dotnetguru@gmail.com"
               value={projectDetails.email}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -555,6 +558,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">Telefoon</label>
             <Input
+              placeholder="+31638787552"
               value={projectDetails.phone}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -567,6 +571,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">Datum</label>
             <Input
+              placeholder="12-01-2024"
               value={projectDetails.date}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -596,6 +601,7 @@ export default function InvoiceEditor({
               Projectomschrijving
             </label>
             <Input
+              placeholder="Totaal renovatie Vossiusstraat 39"
               value={projectDetails.projectDescription}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -608,6 +614,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">Geldigheid</label>
             <Input
+              placeholder="14 dagen"
               value={projectDetails.validity}
               onChange={(e) =>
                 setProjectDetails((prev) => ({

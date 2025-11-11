@@ -208,6 +208,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Projectadres
           </label>
           <Input
+            placeholder="Vossiusstraat 39-H, Amsterdam"
             value={projectDetails.projectAddress}
             onChange={(e) =>
               setProjectDetails({
@@ -220,6 +221,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Klantnaam</label>
           <Input
+            placeholder="Sanin Saracevic"
             value={projectDetails.clientName}
             onChange={(e) =>
               setProjectDetails({
@@ -232,6 +234,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">E-mail</label>
           <Input
+            placeholder="dotnetguru@gmail.com"
             value={projectDetails.email}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, email: e.target.value })
@@ -241,6 +244,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Telefoon</label>
           <Input
+            placeholder="+31638787552"
             value={projectDetails.phone}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, phone: e.target.value })
@@ -250,6 +254,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Datum</label>
           <Input
+            placeholder="12-01-2024"
             value={projectDetails.date}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, date: e.target.value })
@@ -276,6 +281,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Projectomschrijving
           </label>
           <Input
+            placeholder="Totaal renovatie Vossiusstraat 39"
             value={projectDetails.projectDescription}
             onChange={(e) =>
               setProjectDetails({
@@ -288,6 +294,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Geldigheid</label>
           <Input
+            placeholder="14 dagen"
             value={projectDetails.validity}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, validity: e.target.value })
@@ -780,14 +787,14 @@ export default function InvoiceGenerator() {
   ]);
 
   const [projectDetails, setProjectDetails] = useState<ProjectDetails>({
-    projectAddress: "Vossiusstraat 39-H, Amsterdam",
-    clientName: "Sanin Saracevic",
-    email: "dotnetguru@gmail.com",
-    phone: "+31638787552",
-    date: "12-01-2024",
+    projectAddress: "",
+    clientName: "",
+    email: "",
+    phone: "",
+    date: "",
     invoiceNumber: "",
-    projectDescription: "Totaal renovatie Vossiusstraat 39",
-    validity: "14 dagen",
+    projectDescription: "",
+    validity: "",
     headerImages: [],
     richTextContent: EditorState.createEmpty(),
   });
