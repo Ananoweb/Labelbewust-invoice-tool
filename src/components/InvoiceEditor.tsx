@@ -137,7 +137,7 @@ export default function InvoiceEditor({
           <p className="text-lg font-medium">{message}</p>
           {isGeneratingPdf && (
             <p className="text-sm text-gray-500 mt-2">
-              This may take a few moments...
+              Dit kan een paar momenten duren...
             </p>
           )}
         </div>
@@ -147,7 +147,7 @@ export default function InvoiceEditor({
 
   const handleGeneratePdf = async () => {
   setIsGeneratingPdf(true);
-  const toastId = toast.loading("Generating PDF...", {
+  const toastId = toast.loading("PDF Genereren...", {
     position: "top-right",
   });
 
@@ -179,14 +179,14 @@ export default function InvoiceEditor({
     );
 
     toast.update(toastId, {
-      render: `PDF generated for ${projectDetails.clientName}`,
+      render: `PDF gegenereerd voor ${projectDetails.clientName}`,
       type: "success",
       isLoading: false,
       autoClose: 3000,
     });
   } catch (error: any) {
     toast.update(toastId, {
-      render: `Failed to generate PDF: ${error.message}`,
+      render: `Fout bij genereren PDF: ${error.message}`,
       type: "error",
       isLoading: false,
       autoClose: 5000,
@@ -238,7 +238,7 @@ export default function InvoiceEditor({
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      toast.info("Saving invoice...", { autoClose: false });
+      toast.info("Factuur opslaan...", { autoClose: false });
 
       // Prepare the data to save
       const dataToSave = {
@@ -259,11 +259,11 @@ export default function InvoiceEditor({
 
       const docRef = doc(db, "invoices", invoiceId);
       await updateDoc(docRef, dataToSave);
-      toast.success("Invoice saved successfully!", { autoClose: 1000 });
+      toast.success("Factuur succesvol opgeslagen!", { autoClose: 1000 });
       router.push("/");
     } catch (error) {
       console.error("Error updating invoice:", error);
-      toast.error(`Failed to save invoice: ${error.message}`, {
+      toast.error(`Fout bij opslaan factuur: ${error.message}`, {
         autoClose: 5000,
       });
     } finally {
@@ -289,12 +289,12 @@ export default function InvoiceEditor({
   };
   const deleteSection = (sectionId: string) => {
     if (sections.length <= 1 || sections[0].id === sectionId) {
-      toast.warning("You must keep at least one section");
+      toast.warning("Je moet minimaal één sectie behouden");
       return;
     }
 
     if (
-      confirm("Are you sure you want to delete this section and all its items?")
+      confirm("Weet je zeker dat je deze sectie en alle items wilt verwijderen?")
     ) {
       setSections(sections.filter((section) => section.id !== sectionId));
     }
@@ -423,7 +423,7 @@ export default function InvoiceEditor({
     >
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold flex-1">
-          Edit Invoice #{projectDetails.invoiceNumber}
+          Bewerk Factuur #{projectDetails.invoiceNumber}
         </h1>
         <div className="flex flex-1 justify-end gap-2">
           <Button
@@ -432,7 +432,7 @@ export default function InvoiceEditor({
             disabled={isSaving}
             className="bg-red-500 hover:bg-red-400 text-white font-semibold"
           >
-            Cancel
+            Annuleren
           </Button>
           <Button
             onClick={handleGeneratePdf}
@@ -440,14 +440,14 @@ export default function InvoiceEditor({
             className="bg-blue-500 hover:bg-blue-400 text-white font-semibold flex items-center gap-2"
           >
             <Download className="h-4 w-4" />
-            {isGeneratingPdf ? "Generating..." : "Generate PDF"}
+            {isGeneratingPdf ? "Genereren..." : "Genereer PDF"}
           </Button>
           <Button
             onClick={handleSave}
             disabled={isSaving}
             className="bg-green-600 hover:bg-green-500 text-white font-semibold"
           >
-            {isSaving ? "Saving..." : "Save Changes"}
+            {isSaving ? "Opslaan..." : "Wijzigingen Opslaan"}
           </Button>
         </div>
       </div>
@@ -632,14 +632,14 @@ export default function InvoiceEditor({
 
       {sections.map((section, index) => (
         <div key={section.id} className="mb-6 bg-white rounded-lg shadow p-6">
-          {/* <h3 className="text-lg font-bold mb-4">Section {section.id}</h3> */}
+          {/* <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3> */}
           <div className="flex justify-between items-start">
-            <h3 className="text-lg font-bold mb-4">Section {section.id}</h3>
+            <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3>
             {index > 0 && (
               <button
                 onClick={() => deleteSection(section.id)}
                 className="text-red-500 hover:text-red-700 p-1"
-                title="Delete section"
+                title="Verwijder sectie"
               >
                 <Trash2 className="h-5 w-5" />
               </button>
@@ -647,7 +647,7 @@ export default function InvoiceEditor({
           </div>
           <div className="mb-4">
             <Input
-              placeholder="Section Title"
+              placeholder="Sectie Titel"
               value={section.title}
               onChange={(e) =>
                 setSections(
@@ -662,11 +662,11 @@ export default function InvoiceEditor({
           <table className="w-full mb-4">
             <thead>
               <tr>
-                <th className="text-left">Description</th>
-                <th className="text-right">Quantity</th>
-                <th className="text-right">Price</th>
-                <th className="text-right">VAT</th>
-                <th className="text-right">Subtotal</th>
+                <th className="text-left">Omschrijving</th>
+                <th className="text-right">Aantal</th>
+                <th className="text-right">Prijs</th>
+                <th className="text-right">BTW</th>
+                <th className="text-right">Subtotaal</th>
                 <th></th>
               </tr>
             </thead>
@@ -789,7 +789,7 @@ export default function InvoiceEditor({
             <tfoot>
               <tr>
                 <td colSpan={4} className="text-right font-medium py-2">
-                  Subtotal:
+                  Subtotaal:
                 </td>
                 <td className="text-right py-2">
                   € {calculateSubtotal(section.items).toFixed(2)}
@@ -801,7 +801,7 @@ export default function InvoiceEditor({
                 ([vatRate, amount]) => (
                   <tr key={vatRate}>
                     <td colSpan={4} className="text-right font-medium py-1">
-                      VAT ({vatRate || 0}%):
+                      BTW ({vatRate || 0}%):
                     </td>
                     <td className="text-right py-1">
                       € {isNaN(amount) ? "0.00" : amount.toFixed(2)}
@@ -812,7 +812,7 @@ export default function InvoiceEditor({
 
               <tr>
                 <td colSpan={4} className="text-right font-medium py-2">
-                  Total incl. VAT:
+                  Totaal incl. BTW:
                 </td>
                 <td className="text-right py-2">
                   € {calculateTotal(section.items).toFixed(2)}
@@ -828,18 +828,18 @@ export default function InvoiceEditor({
             onClick={() => addItem(section.id)}
             className="mb-4"
           >
-            Add Item
+            Item Toevoegen
           </Button>
         </div>
       ))}
 
       <Button variant="outline" onClick={addSection}>
-        Add Section
+        Sectie Toevoegen
       </Button>
 
       {(isSaving || isGeneratingPdf) && (
         <LoadingOverlay
-          message={isGeneratingPdf ? "Generating PDF..." : "Saving invoice..."}
+          message={isGeneratingPdf ? "PDF Genereren..." : "Factuur opslaan..."}
           isGeneratingPdf={isGeneratingPdf}
         />
       )}

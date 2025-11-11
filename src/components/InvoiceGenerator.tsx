@@ -382,7 +382,7 @@ export default function InvoiceGenerator() {
           <p className="text-lg font-medium">{message}</p>
           {isGeneratingPdf && (
             <p className="text-sm text-gray-500 mt-2">
-              This may take a few moments...
+              Dit kan een paar momenten duren...
             </p>
           )}
         </div>
@@ -391,7 +391,7 @@ export default function InvoiceGenerator() {
   };
 
   const deleteInvoice = async (invoiceId: string) => {
-    if (confirm("Are you sure you want to delete this invoice?")) {
+    if (confirm("Weet je zeker dat je deze factuur wilt verwijderen?")) {
       try {
         await deleteDoc(doc(db, "invoices", invoiceId));
         fetchSavedInvoices(); // Refresh the list
@@ -402,7 +402,7 @@ export default function InvoiceGenerator() {
   };
   const handleGeneratePdf = async () => {
     setIsGeneratingPdf(true);
-    const toastId = toast.loading("Generating PDF...", {
+    const toastId = toast.loading("PDF Genereren...", {
       position: "top-right",
     });
 
@@ -422,14 +422,14 @@ export default function InvoiceGenerator() {
       );
 
       toast.update(toastId, {
-        render: `PDF generated for ${projectDetails.clientName}`,
+        render: `PDF gegenereerd voor ${projectDetails.clientName}`,
         type: "success",
         isLoading: false,
         autoClose: 3000,
       });
     } catch (error) {
       toast.update(toastId, {
-        render: `Failed to generate PDF: ${error.message}`,
+        render: `Fout bij genereren PDF: ${error.message}`,
         type: "error",
         isLoading: false,
         autoClose: 5000,
@@ -746,7 +746,7 @@ export default function InvoiceGenerator() {
     if (sectionId === "0.00") return;
 
     if (
-      confirm("Are you sure you want to delete this section and all its items?")
+      confirm("Weet je zeker dat je deze sectie en alle items wilt verwijderen?")
     ) {
       setSections(sections.filter((section) => section.id !== sectionId));
     }
@@ -883,14 +883,14 @@ export default function InvoiceGenerator() {
 
         return (
           <div key={section.id} className="mb-6 bg-white rounded-lg shadow p-6">
-            {/* <h3 className="text-lg font-bold mb-4">Section {section.id}</h3> */}
+            {/* <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3> */}
             <div className="flex justify-between items-start">
-              <h3 className="text-lg font-bold mb-4">Section {section.id}</h3>
+              <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3>
               {section.id !== "0.00" && (
                 <button
                   onClick={() => deleteSection(section.id)}
                   className="transition-all duration-200 ease-in-out transform hover:scale-110 text-red-500 hover:text-red-600 p-1"
-                  title="Delete section"
+                  title="Verwijder sectie"
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
@@ -898,7 +898,7 @@ export default function InvoiceGenerator() {
             </div>
             <div className="mb-4">
               <Input
-                placeholder="Section Title"
+                placeholder="Sectie Titel"
                 value={section.title}
                 onChange={(e) =>
                   setSections(
@@ -913,11 +913,11 @@ export default function InvoiceGenerator() {
             <table className="w-full mb-4">
               <thead>
                 <tr>
-                  <th className="text-left">Description</th>
-                  <th className="text-right">Quantity</th>
-                  <th className="text-right">Price</th>
-                  <th className="text-right">VAT</th>
-                  <th className="text-right">Subtotal</th>
+                  <th className="text-left">Omschrijving</th>
+                  <th className="text-right">Aantal</th>
+                  <th className="text-right">Prijs</th>
+                  <th className="text-right">BTW</th>
+                  <th className="text-right">Subtotaal</th>
                   <th></th>
                 </tr>
               </thead>
@@ -1045,7 +1045,7 @@ export default function InvoiceGenerator() {
               <tfoot>
                 <tr>
                   <td colSpan={4} className="text-right font-medium py-2">
-                    Subtotal:
+                    Subtotaal:
                   </td>
                   <td className="text-right py-2">
                     € {calculateSubtotal(section.items).toFixed(2)}
@@ -1057,7 +1057,7 @@ export default function InvoiceGenerator() {
                   ([vatRate, amount]) => (
                     <tr key={vatRate}>
                       <td colSpan={4} className="text-right font-medium py-1">
-                        VAT ({vatRate || 0}%):
+                        BTW ({vatRate || 0}%):
                       </td>
                       <td className="text-right py-1">
                         € {isNaN(amount) ? "0.00" : amount.toFixed(2)}
@@ -1068,7 +1068,7 @@ export default function InvoiceGenerator() {
 
                 <tr>
                   <td colSpan={4} className="text-right font-medium py-2">
-                    Total incl. VAT:
+                    Totaal incl. BTW:
                   </td>
                   <td className="text-right py-2">
                     € {calculateTotal(section.items).toFixed(2)}
@@ -1085,7 +1085,7 @@ export default function InvoiceGenerator() {
               className="mb-4"
             >
               <Plus className="h-4 w-4 mr-2" />
-              Add Item
+              Item Toevoegen
             </Button>
           </div>
         );
@@ -1109,26 +1109,26 @@ export default function InvoiceGenerator() {
                   <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10">
                     <div className="flex flex-col items-center">
                       <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500 mb-2"></div>
-                      <p className="text-sm font-medium">Loading invoices...</p>
+                      <p className="text-sm font-medium">Facturen laden...</p>
                     </div>
                   </div>
                 )}
                 <div className="flex-1 overflow-y-auto p-6">
                   <div className="flex items-start justify-between">
-                    <h2 className="text-xl font-bold">Saved Invoices</h2>
+                    <h2 className="text-xl font-bold">Opgeslagen Facturen</h2>
                     <button
                       type="button"
                       className="text-gray-400 hover:text-gray-500"
                       onClick={() => setIsSidebarOpen(false)}
                     >
-                      <span className="sr-only">Close</span>
+                      <span className="sr-only">Sluiten</span>
                       <X className="h-6 w-6" />
                     </button>
                   </div>
 
                   <div className="mt-6">
                     {/* {loading && (
-                      <div className="text-center py-4">Loading...</div>
+                      <div className="text-center py-4">Laden...</div>
                     )} */}
 
                     {error && <div className="text-red-500 py-4">{error}</div>}
@@ -1137,7 +1137,7 @@ export default function InvoiceGenerator() {
                       <div className="space-y-3">
                         {savedInvoices.length === 0 ? (
                           <p className="text-gray-500">
-                            No saved invoices found
+                            Geen opgeslagen facturen gevonden
                           </p>
                         ) : (
                           // In your saved invoices list
@@ -1162,18 +1162,18 @@ export default function InvoiceGenerator() {
                                     generatePdfForInvoice(invoice);
                                   }}
                                   className="p-1.5 text-xs bg-green-200 text-green-600 hover:bg-green-100 font-bold rounded-lg flex items-center"
-                                  title="Export PDF"
+                                  title="Exporteer PDF"
                                   disabled={isGeneratingPdf}
                                 >
                                   <Download className="h-3 w-3 mr-1" />
-                                  {isGeneratingPdf ? "Generating..." : "PDF"}
+                                  {isGeneratingPdf ? "Genereren..." : "PDF"}
                                 </button>
                                 <Link
                                   href={`/invoices/${invoice.id}`}
                                   className="p-1.5 text-xs bg-blue-200 text-blue-600 font-bold hover:bg-blue-100 rounded-lg"
                                   onClick={(e) => e.stopPropagation()}
                                 >
-                                  Edit
+                                  Bewerken
                                 </Link>
                                 <button
                                   onClick={(e) => {
@@ -1182,7 +1182,7 @@ export default function InvoiceGenerator() {
                                   }}
                                   className="p-1.5 text-xs bg-red-200 text-red-600 hover:bg-red-100 font-bold rounded-lg"
                                 >
-                                  Delete
+                                  Verwijderen
                                 </button>
                               </div>
                             </div>
@@ -1201,7 +1201,7 @@ export default function InvoiceGenerator() {
       <div className="flex gap-4 mt-6">
         <Button variant="outline" onClick={addSection}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Section
+          Sectie Toevoegen
         </Button>
 
         {/* {console.log(
@@ -1217,7 +1217,7 @@ export default function InvoiceGenerator() {
           disabled={isSaving || isGeneratingPdf}
         >
           <Download className="h-4 w-4 mr-2" />
-          {isGeneratingPdf ? "Generating..." : "Export PDF"}
+          {isGeneratingPdf ? "Genereren..." : "Exporteer PDF"}
         </Button>
 
         {/* <FirebaseTest /> */}
@@ -1228,7 +1228,7 @@ export default function InvoiceGenerator() {
           disabled={isSaving}
         >
           <Save className="h-4 w-4 mr-2" />
-          {isSaving ? "Saving..." : "Save to Database"}
+          {isSaving ? "Opslaan..." : "Opslaan in Database"}
         </Button>
 
         <Button
@@ -1236,14 +1236,14 @@ export default function InvoiceGenerator() {
           onClick={() => setIsSidebarOpen(true)}
           className="ml-4"
         >
-          View Saved Invoices
+          Bekijk Opgeslagen Facturen
         </Button>
       </div>
 
       {(isSaving || isGeneratingPdf) && (
         <LoadingOverlay
           message={
-            isGeneratingPdf ? "Generating PDF..." : "Saving to database..."
+            isGeneratingPdf ? "PDF Genereren..." : "Opslaan in database..."
           }
           isGeneratingPdf={isGeneratingPdf}
         />
