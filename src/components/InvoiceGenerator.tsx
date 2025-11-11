@@ -208,6 +208,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Projectadres
           </label>
           <Input
+            placeholder="Vossiusstraat 39-H, Amsterdam"
             value={projectDetails.projectAddress}
             onChange={(e) =>
               setProjectDetails({
@@ -220,6 +221,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Klantnaam</label>
           <Input
+            placeholder="Sanin Saracevic"
             value={projectDetails.clientName}
             onChange={(e) =>
               setProjectDetails({
@@ -232,6 +234,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">E-mail</label>
           <Input
+            placeholder="dotnetguru@gmail.com"
             value={projectDetails.email}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, email: e.target.value })
@@ -241,6 +244,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Telefoon</label>
           <Input
+            placeholder="+31638787552"
             value={projectDetails.phone}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, phone: e.target.value })
@@ -250,6 +254,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Datum</label>
           <Input
+            placeholder="12-01-2024"
             value={projectDetails.date}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, date: e.target.value })
@@ -261,6 +266,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Factuurnummer
           </label>
           <Input
+            placeholder="621"
             value={projectDetails.invoiceNumber}
             onChange={(e) =>
               setProjectDetails({
@@ -275,6 +281,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Projectomschrijving
           </label>
           <Input
+            placeholder="Totaal renovatie Vossiusstraat 39"
             value={projectDetails.projectDescription}
             onChange={(e) =>
               setProjectDetails({
@@ -287,6 +294,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         <div>
           <label className="block text-sm font-medium mb-1">Geldigheid</label>
           <Input
+            placeholder="14 dagen"
             value={projectDetails.validity}
             onChange={(e) =>
               setProjectDetails({ ...projectDetails, validity: e.target.value })
@@ -401,6 +409,15 @@ export default function InvoiceGenerator() {
     }
   };
   const handleGeneratePdf = async () => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je een PDF genereert.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
     setIsGeneratingPdf(true);
     const toastId = toast.loading("PDF Genereren...", {
       position: "top-right",
@@ -438,6 +455,57 @@ export default function InvoiceGenerator() {
       setIsGeneratingPdf(false);
     }
   };
+  const generatePdfForInvoice = async (invoice: SavedInvoice) => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!invoice.projectDetails.invoiceNumber || invoice.projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Deze factuur heeft geen factuurnummer. Bewerk de factuur om een factuurnummer toe te voegen.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
+    setIsGeneratingPdf(true);
+    const toastId = toast.loading("PDF Genereren...", {
+      position: "top-right",
+    });
+
+    try {
+      // Prepare sections with calculations
+      const sectionsWithCalculations = invoice.sections.map((section) => ({
+        ...section,
+        calculations: calculateSectionTotals(section.items),
+      }));
+
+      // Use new PDF generator with smart page breaks
+      const doc = await generateInvoicePDF(
+        invoice.projectDetails,
+        sectionsWithCalculations
+      );
+
+      // Save the PDF
+      doc.save(
+        `${invoice.projectDetails.projectAddress}-${invoice.projectDetails.invoiceNumber}.pdf`
+      );
+
+      toast.update(toastId, {
+        render: `PDF gegenereerd voor ${invoice.projectDetails.clientName}`,
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } catch (error: any) {
+      toast.update(toastId, {
+        render: `Fout bij genereren PDF: ${error.message}`,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   const fetchSavedInvoices = async () => {
     try {
       setLoading(true);
@@ -478,6 +546,15 @@ export default function InvoiceGenerator() {
   };
 
   const saveToFirebase = async () => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je opslaat.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
     try {
       setIsSaving(true);
 
@@ -710,14 +787,14 @@ export default function InvoiceGenerator() {
   ]);
 
   const [projectDetails, setProjectDetails] = useState<ProjectDetails>({
-    projectAddress: "Vossiusstraat 39-H, Amsterdam",
-    clientName: "Sanin Saracevic",
-    email: "dotnetguru@gmail.com",
-    phone: "+31638787552",
-    date: "12-01-2024",
-    invoiceNumber: "621",
-    projectDescription: "Totaal renovatie Vossiusstraat 39",
-    validity: "14 dagen",
+    projectAddress: "",
+    clientName: "",
+    email: "",
+    phone: "",
+    date: "",
+    invoiceNumber: "",
+    projectDescription: "",
+    validity: "",
     headerImages: [],
     richTextContent: EditorState.createEmpty(),
   });

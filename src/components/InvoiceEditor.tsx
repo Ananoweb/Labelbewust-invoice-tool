@@ -146,6 +146,15 @@ export default function InvoiceEditor({
   };
 
   const handleGeneratePdf = async () => {
+  // Validatie: controleer of factuurnummer is ingevuld
+  if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+    toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je een PDF genereert.", {
+      position: "top-right",
+      autoClose: 5000,
+    });
+    return;
+  }
+
   setIsGeneratingPdf(true);
   const toastId = toast.loading("PDF Genereren...", {
     position: "top-right",
@@ -236,6 +245,15 @@ export default function InvoiceEditor({
   };
 
   const handleSave = async () => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je opslaat.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
     try {
       setIsSaving(true);
       toast.info("Factuur opslaan...", { autoClose: false });
@@ -499,6 +517,7 @@ export default function InvoiceEditor({
               Projectadres
             </label>
             <Input
+              placeholder="Vossiusstraat 39-H, Amsterdam"
               value={projectDetails.projectAddress}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -513,6 +532,7 @@ export default function InvoiceEditor({
               Klantnaam
             </label>
             <Input
+              placeholder="Sanin Saracevic"
               value={projectDetails.clientName}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -525,6 +545,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">E-mail</label>
             <Input
+              placeholder="dotnetguru@gmail.com"
               value={projectDetails.email}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -537,6 +558,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">Telefoon</label>
             <Input
+              placeholder="+31638787552"
               value={projectDetails.phone}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -549,6 +571,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">Datum</label>
             <Input
+              placeholder="12-01-2024"
               value={projectDetails.date}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -563,6 +586,7 @@ export default function InvoiceEditor({
               Factuurnummer
             </label>
             <Input
+              placeholder="621"
               value={projectDetails.invoiceNumber}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -577,6 +601,7 @@ export default function InvoiceEditor({
               Projectomschrijving
             </label>
             <Input
+              placeholder="Totaal renovatie Vossiusstraat 39"
               value={projectDetails.projectDescription}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
@@ -589,6 +614,7 @@ export default function InvoiceEditor({
           <div>
             <label className="block text-sm font-medium mb-1">Geldigheid</label>
             <Input
+              placeholder="14 dagen"
               value={projectDetails.validity}
               onChange={(e) =>
                 setProjectDetails((prev) => ({
