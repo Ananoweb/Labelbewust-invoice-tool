@@ -355,6 +355,9 @@ export default function InvoiceGenerator() {
   // Add this state to your component
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Track if this invoice has been saved to database
+  const [savedInvoiceId, setSavedInvoiceId] = useState<string | null>(null);
+
   const LoadingOverlay = ({
     message,
     isGeneratingPdf,
@@ -416,6 +419,16 @@ export default function InvoiceGenerator() {
         autoClose: 5000,
       });
       return;
+    }
+
+    // Als dit een nieuwe offerte is (nog niet opgeslagen), sla deze eerst automatisch op
+    if (!savedInvoiceId) {
+      const invoiceId = await saveToFirebase(false); // Save without redirect
+      if (!invoiceId) {
+        // Opslaan mislukt, stop PDF generatie
+        return;
+      }
+      // Continue met PDF generatie na succesvol opslaan
     }
 
     setIsGeneratingPdf(true);
@@ -545,14 +558,14 @@ export default function InvoiceGenerator() {
     setIsSidebarOpen(false);
   };
 
-  const saveToFirebase = async () => {
+  const saveToFirebase = async (shouldRedirect: boolean = true): Promise<string | null> => {
     // Validatie: controleer of factuurnummer is ingevuld
     if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
       toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je opslaat.", {
         position: "top-right",
         autoClose: 5000,
       });
-      return;
+      return null;
     }
 
     try {
@@ -651,17 +664,31 @@ export default function InvoiceGenerator() {
       // 4. Save to Firestore
       const docRef = await addDoc(collection(db, "invoices"), invoiceData);
       console.log("Invoice saved with ID: ", docRef.id);
+
+      // Update local state with saved invoice ID
+      setSavedInvoiceId(docRef.id);
+
       // toast.success("Invoice saved successfully!");
-      toast.success("Invoice saved successfully!", {
-        autoClose: 1000,
-        onClose: () => router.push(`/invoices/${docRef.id}`),
-      });
+      if (shouldRedirect) {
+        toast.success("Invoice saved successfully!", {
+          autoClose: 1000,
+          onClose: () => router.push(`/invoices/${docRef.id}`),
+        });
+      } else {
+        toast.success("Offerte automatisch opgeslagen in database!", {
+          autoClose: 2000,
+          position: "top-right",
+        });
+      }
+
+      return docRef.id;
     } catch (error) {
       console.error("Error saving invoice:", error);
       // toast.error("Failed to save invoice. Please try again.");
       toast.error(`Failed to save invoice: ${error.message}`, {
         autoClose: 5000,
       });
+      return null;
     } finally {
       setIsSaving(false);
     }
