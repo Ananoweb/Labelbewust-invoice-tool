@@ -146,6 +146,15 @@ export default function InvoiceEditor({
   };
 
   const handleGeneratePdf = async () => {
+  // Validatie: controleer of factuurnummer is ingevuld
+  if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+    toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je een PDF genereert.", {
+      position: "top-right",
+      autoClose: 5000,
+    });
+    return;
+  }
+
   setIsGeneratingPdf(true);
   const toastId = toast.loading("PDF Genereren...", {
     position: "top-right",
@@ -236,6 +245,15 @@ export default function InvoiceEditor({
   };
 
   const handleSave = async () => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je opslaat.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
     try {
       setIsSaving(true);
       toast.info("Factuur opslaan...", { autoClose: false });
@@ -563,6 +581,7 @@ export default function InvoiceEditor({
               Factuurnummer
             </label>
             <Input
+              placeholder="621"
               value={projectDetails.invoiceNumber}
               onChange={(e) =>
                 setProjectDetails((prev) => ({

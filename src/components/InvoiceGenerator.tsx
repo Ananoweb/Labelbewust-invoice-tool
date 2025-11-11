@@ -261,6 +261,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Factuurnummer
           </label>
           <Input
+            placeholder="621"
             value={projectDetails.invoiceNumber}
             onChange={(e) =>
               setProjectDetails({
@@ -401,6 +402,15 @@ export default function InvoiceGenerator() {
     }
   };
   const handleGeneratePdf = async () => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je een PDF genereert.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
     setIsGeneratingPdf(true);
     const toastId = toast.loading("PDF Genereren...", {
       position: "top-right",
@@ -438,6 +448,57 @@ export default function InvoiceGenerator() {
       setIsGeneratingPdf(false);
     }
   };
+  const generatePdfForInvoice = async (invoice: SavedInvoice) => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!invoice.projectDetails.invoiceNumber || invoice.projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Deze factuur heeft geen factuurnummer. Bewerk de factuur om een factuurnummer toe te voegen.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
+    setIsGeneratingPdf(true);
+    const toastId = toast.loading("PDF Genereren...", {
+      position: "top-right",
+    });
+
+    try {
+      // Prepare sections with calculations
+      const sectionsWithCalculations = invoice.sections.map((section) => ({
+        ...section,
+        calculations: calculateSectionTotals(section.items),
+      }));
+
+      // Use new PDF generator with smart page breaks
+      const doc = await generateInvoicePDF(
+        invoice.projectDetails,
+        sectionsWithCalculations
+      );
+
+      // Save the PDF
+      doc.save(
+        `${invoice.projectDetails.projectAddress}-${invoice.projectDetails.invoiceNumber}.pdf`
+      );
+
+      toast.update(toastId, {
+        render: `PDF gegenereerd voor ${invoice.projectDetails.clientName}`,
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } catch (error: any) {
+      toast.update(toastId, {
+        render: `Fout bij genereren PDF: ${error.message}`,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   const fetchSavedInvoices = async () => {
     try {
       setLoading(true);
@@ -478,6 +539,15 @@ export default function InvoiceGenerator() {
   };
 
   const saveToFirebase = async () => {
+    // Validatie: controleer of factuurnummer is ingevuld
+    if (!projectDetails.invoiceNumber || projectDetails.invoiceNumber.trim() === "") {
+      toast.error("Factuurnummer is verplicht. Vul een factuurnummer in voordat je opslaat.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      return;
+    }
+
     try {
       setIsSaving(true);
 
@@ -715,7 +785,7 @@ export default function InvoiceGenerator() {
     email: "dotnetguru@gmail.com",
     phone: "+31638787552",
     date: "12-01-2024",
-    invoiceNumber: "621",
+    invoiceNumber: "",
     projectDescription: "Totaal renovatie Vossiusstraat 39",
     validity: "14 dagen",
     headerImages: [],
