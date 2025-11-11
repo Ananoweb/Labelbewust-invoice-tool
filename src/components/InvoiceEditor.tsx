@@ -454,13 +454,13 @@ export default function InvoiceEditor({
 
       {/* Project Details Form - now fully controlled */}
       <div className="mb-6 bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold mb-4">Project Details</h2>
+        <h2 className="text-xl font-bold mb-4">Projectgegevens</h2>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
           {[0, 1].map((index) => (
             <div key={index}>
               <label className="block text-sm font-medium mb-1">
-                Header Image {index + 1}
+                Header Afbeelding {index + 1}
               </label>
               <input
                 type="file"
@@ -496,7 +496,7 @@ export default function InvoiceEditor({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1">
-              Project Address
+              Projectadres
             </label>
             <Input
               value={projectDetails.projectAddress}
@@ -510,7 +510,7 @@ export default function InvoiceEditor({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
-              Client Name
+              Klantnaam
             </label>
             <Input
               value={projectDetails.clientName}
@@ -523,7 +523,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1">E-mail</label>
             <Input
               value={projectDetails.email}
               onChange={(e) =>
@@ -535,7 +535,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Phone</label>
+            <label className="block text-sm font-medium mb-1">Telefoon</label>
             <Input
               value={projectDetails.phone}
               onChange={(e) =>
@@ -547,7 +547,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Date</label>
+            <label className="block text-sm font-medium mb-1">Datum</label>
             <Input
               value={projectDetails.date}
               onChange={(e) =>
@@ -560,7 +560,7 @@ export default function InvoiceEditor({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
-              Invoice Number
+              Factuurnummer
             </label>
             <Input
               value={projectDetails.invoiceNumber}
@@ -574,7 +574,7 @@ export default function InvoiceEditor({
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">
-              Project Description
+              Projectomschrijving
             </label>
             <Input
               value={projectDetails.projectDescription}
@@ -587,7 +587,7 @@ export default function InvoiceEditor({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">Validity</label>
+            <label className="block text-sm font-medium mb-1">Geldigheid</label>
             <Input
               value={projectDetails.validity}
               onChange={(e) =>

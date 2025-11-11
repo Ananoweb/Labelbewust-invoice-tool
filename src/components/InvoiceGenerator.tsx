@@ -163,13 +163,13 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
 
   return (
     <div className="mb-6 bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-bold mb-4">Project Details</h2>
+      <h2 className="text-xl font-bold mb-4">Projectgegevens</h2>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
         {[0, 1].map((index) => (
           <div key={index}>
             <label className="block text-sm font-medium mb-1">
-              Header Image {index + 1}
+              Header Afbeelding {index + 1}
             </label>
             <input
               type="file"
@@ -205,7 +205,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1">
-            Project Address
+            Projectadres
           </label>
           <Input
             value={projectDetails.projectAddress}
@@ -218,7 +218,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Client Name</label>
+          <label className="block text-sm font-medium mb-1">Klantnaam</label>
           <Input
             value={projectDetails.clientName}
             onChange={(e) =>
@@ -230,7 +230,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
+          <label className="block text-sm font-medium mb-1">E-mail</label>
           <Input
             value={projectDetails.email}
             onChange={(e) =>
@@ -239,7 +239,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Phone</label>
+          <label className="block text-sm font-medium mb-1">Telefoon</label>
           <Input
             value={projectDetails.phone}
             onChange={(e) =>
@@ -248,7 +248,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Date</label>
+          <label className="block text-sm font-medium mb-1">Datum</label>
           <Input
             value={projectDetails.date}
             onChange={(e) =>
@@ -258,7 +258,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">
-            Invoice Number
+            Factuurnummer
           </label>
           <Input
             value={projectDetails.invoiceNumber}
@@ -272,7 +272,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">
-            Project Description
+            Projectomschrijving
           </label>
           <Input
             value={projectDetails.projectDescription}
@@ -285,7 +285,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Validity</label>
+          <label className="block text-sm font-medium mb-1">Geldigheid</label>
           <Input
             value={projectDetails.validity}
             onChange={(e) =>
