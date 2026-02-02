@@ -278,7 +278,6 @@ export default function InvoiceEditor({
       const docRef = doc(db, "invoices", invoiceId);
       await updateDoc(docRef, dataToSave);
       toast.success("Factuur succesvol opgeslagen!", { autoClose: 1000 });
-      router.push("/");
     } catch (error) {
       console.error("Error updating invoice:", error);
       toast.error(`Fout bij opslaan factuur: ${error.message}`, {
