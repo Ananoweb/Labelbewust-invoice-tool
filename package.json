@@ -22,7 +22,7 @@
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.456.0",
-    "next": "15.1.0",
+    "next": "15.1.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-draft-wysiwyg": "^1.15.0",
