@@ -144,7 +144,7 @@ export default function PreviewPage() {
                   Labelbewust
                 </span>
                 <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 8px; color: white; z-index: 30;">
-                  Een aannemer op wie je kunt bouwen
+                  De aannemer op wie je kan bouwen
                 </span>
               </div>
             </div>

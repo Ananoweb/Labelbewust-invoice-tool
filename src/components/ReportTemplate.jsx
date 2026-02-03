@@ -166,7 +166,7 @@ const ReportTemplate = ({ projectDetails, sections }) => {
               Labelbewust
             </span>
             <span className="font-bold text-[11px] absolute right-6 bottom-3 text-white">
-              Een aannemer op wie je kunt bouwen
+              De aannemer op wie je kan bouwen
             </span>
           </div>
         </div>

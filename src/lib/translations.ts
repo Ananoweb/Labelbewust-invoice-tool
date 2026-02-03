@@ -71,7 +71,7 @@ export const translations: Record<Language, Translations> = {
 
     // Company slogan
     companySlogan: 'De aannemer van Nederland',
-    companyTagline: 'Een aannemer op wie je kunt bouwen',
+    companyTagline: 'De aannemer op wie je kan bouwen',
 
     // Services
     roughConstruction: 'Ruwbouw',
@@ -126,7 +126,7 @@ export const translations: Record<Language, Translations> = {
 
     // Company slogan
     companySlogan: 'The contractor of the Netherlands',
-    companyTagline: 'A contractor you can build on',
+    companyTagline: 'The contractor you can build on',
 
     // Services
     roughConstruction: 'Structural work',
