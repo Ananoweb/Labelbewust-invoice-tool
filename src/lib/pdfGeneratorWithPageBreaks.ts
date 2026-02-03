@@ -401,8 +401,16 @@ export const generateInvoicePDF = async (
 
     const tableBody: any[] = [];
 
+    // Track which rows have images for later rendering
+    const rowsWithImages: { rowIndex: number; imageUrl: string }[] = [];
+
     // Add item rows
-    section.items.forEach((item) => {
+    section.items.forEach((item, itemIndex) => {
+      // Track if this item has an image
+      if (item.imageUrl) {
+        rowsWithImages.push({ rowIndex: itemIndex, imageUrl: item.imageUrl });
+      }
+
       tableBody.push([
         item.description || ' ',
         item.quantity?.toString() || '-',
@@ -445,6 +453,7 @@ export const generateInvoicePDF = async (
         fontSize: 8,
         cellPadding: 6,
         font: 'helvetica',
+        minCellHeight: 20,
       },
       headStyles: {
         fillColor: [37, 112, 68], // #257044 for first column
@@ -461,8 +470,34 @@ export const generateInvoicePDF = async (
       },
       margin: { left: margin, right: margin, top: 10, bottom: margin },
       pageBreak: 'auto',
-      rowPageBreak: 'avoid', // THIS IS THE KEY - prevents rows from splitting
+      rowPageBreak: 'avoid',
       showHead: 'everyPage',
+      // Add extra height for rows with images
+      didParseCell: (data) => {
+        if (data.section === 'body' && data.column.index === 0) {
+          const rowWithImage = rowsWithImages.find(r => r.rowIndex === data.row.index);
+          if (rowWithImage) {
+            data.cell.styles.minCellHeight = 60; // Make room for image
+          }
+        }
+      },
+      // Draw images in cells
+      didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 0) {
+          const rowWithImage = rowsWithImages.find(r => r.rowIndex === data.row.index);
+          if (rowWithImage && rowWithImage.imageUrl) {
+            try {
+              const imgWidth = 45;
+              const imgHeight = 45;
+              const imgX = data.cell.x + 5;
+              const imgY = data.cell.y + data.cell.height - imgHeight - 5;
+              doc.addImage(rowWithImage.imageUrl, 'JPEG', imgX, imgY, imgWidth, imgHeight);
+            } catch (error) {
+              console.warn('Could not add item image:', error);
+            }
+          }
+        }
+      },
     });
 
     // Update currentY after table
