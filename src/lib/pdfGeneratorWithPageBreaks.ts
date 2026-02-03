@@ -106,10 +106,13 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
             <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
               ${projectDetails.projectAddress}
             </h2>
-            <h4 style="color: #36a965; font-weight: bold; margin: 0 0 20px 0; font-size: 14px;">
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Naam</h4>
+            <h4 style="color: #36a965; font-weight: bold; margin: 0 0 12px 0; font-size: 14px;">
               ${projectDetails.clientName}
             </h4>
-            <p style="font-size: 12px; color: #374151; margin: 0; padding: 0;">${projectDetails.email}</p>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Email</h4>
+            <p style="font-size: 12px; color: #374151; margin: 0 0 12px 0; padding: 0;">${projectDetails.email}</p>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Telefoon</h4>
             <p style="font-size: 12px; letter-spacing: 0.05em; color: #374151; margin: 0; padding: 0;">${projectDetails.phone}</p>
           </div>
           <div style="flex: 1; background-color: #f9f9f9; padding: 0 16px 0 24px; height: 231px;">

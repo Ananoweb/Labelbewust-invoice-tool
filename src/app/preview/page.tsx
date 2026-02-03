@@ -76,10 +76,13 @@ export default function PreviewPage() {
                 <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
                   ${sampleProjectDetails.projectAddress}
                 </h2>
-                <h4 style="color: #36a965; font-weight: bold; margin: 0 0 20px 0; font-size: 14px;">
+                <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Naam</h4>
+                <h4 style="color: #36a965; font-weight: bold; margin: 0 0 12px 0; font-size: 14px;">
                   ${sampleProjectDetails.clientName}
                 </h4>
-                <p style="font-size: 12px; color: #374151; margin: 0; padding: 0;">${sampleProjectDetails.email}</p>
+                <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Email</h4>
+                <p style="font-size: 12px; color: #374151; margin: 0 0 12px 0; padding: 0;">${sampleProjectDetails.email}</p>
+                <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Telefoon</h4>
                 <p style="font-size: 12px; letter-spacing: 0.05em; color: #374151; margin: 0; padding: 0;">${sampleProjectDetails.phone}</p>
               </div>
               <div style="flex: 1; background-color: #f9f9f9; padding: 16px 16px 48px 24px;">

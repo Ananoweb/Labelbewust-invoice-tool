@@ -64,12 +64,15 @@ const ReportTemplate = ({ projectDetails, sections }) => {
             <h2 className=" text-[#257044] text-xl font-bold leading-6 mb-5">
               {projectDetails.projectAddress}
             </h2>
-            <h4 className="text-[#36a965] font-bold mb-5 text-sm">
+            <h4 className="text-black text-[10px] font-bold">Naam</h4>
+            <h4 className="text-[#36a965] font-bold mb-3 text-sm">
               {projectDetails.clientName}
             </h4>
-            <p className="text-xs text-gray-700 m-0 p-0">
+            <h4 className="text-black text-[10px] font-bold">Email</h4>
+            <p className="text-xs text-gray-700 m-0 p-0 mb-3">
               {projectDetails.email}
             </p>
+            <h4 className="text-black text-[10px] font-bold">Telefoon</h4>
             <p className="text-xs tracking-widest text-gray-700">
               {projectDetails.phone}
             </p>
