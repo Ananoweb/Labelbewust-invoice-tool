@@ -281,7 +281,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Projectomschrijving
           </label>
           <Input
-            placeholder="Totaal renovatie Vossiusstraat 39"
+            placeholder="Totaalrenovatie Vossiusstraat 39"
             value={projectDetails.projectDescription}
             onChange={(e) =>
               setProjectDetails({

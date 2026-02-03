@@ -45,7 +45,7 @@ export const generatePDF = (projectDetails: ProjectDetails, sections: Section[])
   doc.text('Datum', 145, 40);
   doc.text(projectDetails.date, 145, 45);
   doc.text('Kenmerk', 145, 55);
-  doc.text('Totaal renovatie ' + projectDetails.projectAddress, 145, 60);
+  doc.text('Totaalrenovatie ' + (projectDetails.projectAddress || '').trim().replace(/\s+/g, ' '), 145, 60);
   doc.text('Offertenummer', 145, 70);
   doc.text(projectDetails.invoiceNumber, 145, 75);
   doc.text('Geldigheid', 145, 85);
@@ -148,8 +148,8 @@ export const generatePDF = (projectDetails: ProjectDetails, sections: Section[])
   doc.text(projectDetails.email, 14, 25);
   doc.text(projectDetails.phone, 14, 30);
   doc.text(projectDetails.invoiceNumber, 14, 35);
-  doc.text('Totaal renovatie', 14, 40);
-  doc.text(projectDetails.projectAddress, 14, 45);
+  doc.text('Totaalrenovatie', 14, 40);
+  doc.text((projectDetails.projectAddress || '').trim().replace(/\s+/g, ' '), 14, 45);
   doc.text(projectDetails.validity, 14, 50);
   doc.text(projectDetails.date, 14, 55);
 

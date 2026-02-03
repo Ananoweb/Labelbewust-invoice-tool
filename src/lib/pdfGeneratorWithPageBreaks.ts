@@ -127,7 +127,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
               </div>
               <div>
                 <div style="color: black; font-size: 11px; font-weight: bold;">Kenmerk</div>
-                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">Totaal renovatie ${projectDetails.projectAddress}</div>
+                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">Totaalrenovatie ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}</div>
               </div>
               <div>
                 <div style="color: black; font-size: 11px; font-weight: bold;">Geldigheid</div>
@@ -202,7 +202,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           </p>
           <p style="color: #374151; margin: 0; padding: 0; letter-spacing: 0.05em; font-size: 9px;">${projectDetails.date}</p>
           <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">
-            Totaal renovatie ${projectDetails.projectAddress}
+            Totaalrenovatie ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}
           </p>
         </div>
         <div style="padding-top: 8px; padding-right: 24px; padding-bottom: 0; padding-left: 24px; min-height: 425px;">

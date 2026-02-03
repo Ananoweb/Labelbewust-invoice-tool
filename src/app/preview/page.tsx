@@ -97,7 +97,7 @@ export default function PreviewPage() {
                   </div>
                   <div>
                     <div style="color: black; font-size: 11px; font-weight: bold;">Kenmerk</div>
-                    <div style="font-size: 11px; color: #36a965;">Totaal renovatie ${sampleProjectDetails.projectAddress}</div>
+                    <div style="font-size: 11px; color: #36a965;">Totaalrenovatie ${(sampleProjectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}</div>
                   </div>
                   <div>
                     <div style="color: black; font-size: 11px; font-weight: bold;">Geldigheid</div>
@@ -167,7 +167,7 @@ export default function PreviewPage() {
               </p>
               <p style="color: #374151; margin: 0; padding: 0; letter-spacing: 0.05em; font-size: 9px;">${sampleProjectDetails.date}</p>
               <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">
-                Totaal renovatie ${sampleProjectDetails.projectAddress}
+                Totaalrenovatie ${(sampleProjectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}
               </p>
             </div>
             <div style="padding: 8px 24px; min-height: 370px;">

@@ -96,7 +96,7 @@ const ReportTemplate = ({ projectDetails, sections }) => {
               <div>
                 <div className="text-black text-[11px] font-bold">Kenmerk</div>
                 <div className="text-[11px] text-[#36a965]">
-                  Totaal renovatie {projectDetails.projectAddress}
+                  Totaalrenovatie {projectDetails.projectAddress?.trim().replace(/\s+/g, ' ')}
                 </div>
               </div>
               <div>
@@ -207,7 +207,7 @@ const ReportTemplate = ({ projectDetails, sections }) => {
             {projectDetails.date}
           </p>
           <p className="text-gray-700 m-0 p-0 text-[9px]">
-            Totaal renovatie {projectDetails.projectAddress}
+            Totaalrenovatie {projectDetails.projectAddress?.trim().replace(/\s+/g, ' ')}
           </p>
         </div>
         <div className="px-6 pt-2 h-[23.2rem]">
