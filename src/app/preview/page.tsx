@@ -130,10 +130,10 @@ export default function PreviewPage() {
                     <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Nieuwbouw
                   </li>
                   <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Staaframe bouw
+                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Verduurzaming
                   </li>
                   <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Hallenbouw
+                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Warmtepompen
                   </li>
                 </ul>
               </div>

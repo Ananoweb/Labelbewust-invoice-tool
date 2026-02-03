@@ -143,11 +143,11 @@ const ReportTemplate = ({ projectDetails, sections }) => {
               </li>
               <li className="flex items-center mb-2 text-white font-semibold">
                 <span className="text-green-400 mr-2 text-xs">✓</span>
-                Staaframe bouw
+                Verduurzaming
               </li>
               <li className="flex items-center mb-2 text-white font-semibold">
                 <span className="text-green-400 mr-2 text-xs">✓</span>
-                Hallenbouw
+                Warmtepompen
               </li>
             </ul>
           </div>

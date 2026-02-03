@@ -162,10 +162,10 @@ const createPages1And2HTML = (projectDetails: ProjectDetails, t: Translations): 
                 <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.newConstruction}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.steelFrameConstruction}
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.sustainabilityService}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.hallConstruction}
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.heatPumps}
               </li>
             </ul>
           </div>

@@ -21,8 +21,8 @@ export interface Translations {
   totalRenovation: string;
   demolitionWork: string;
   newConstruction: string;
-  steelFrameConstruction: string;
-  hallConstruction: string;
+  sustainabilityService: string;
+  heatPumps: string;
 
   // Footer labels
   renovation: string;
@@ -78,8 +78,8 @@ export const translations: Record<Language, Translations> = {
     totalRenovation: 'Totaalrenovatie',
     demolitionWork: 'Sloopwerk',
     newConstruction: 'Nieuwbouw',
-    steelFrameConstruction: 'Staalframe bouw',
-    hallConstruction: 'Hallenbouw',
+    sustainabilityService: 'Verduurzaming',
+    heatPumps: 'Warmtepompen',
 
     // Footer labels
     renovation: 'Renovatie',
@@ -133,8 +133,8 @@ export const translations: Record<Language, Translations> = {
     totalRenovation: 'Full renovation',
     demolitionWork: 'Demolition',
     newConstruction: 'New construction',
-    steelFrameConstruction: 'Steel frame construction',
-    hallConstruction: 'Hall construction',
+    sustainabilityService: 'Sustainability',
+    heatPumps: 'Heat pumps',
 
     // Footer labels
     renovation: 'Renovation',
