@@ -610,35 +610,5 @@ export const generateInvoicePDF = async (
   // Update currentY after totals table
   currentY = (doc as any).lastAutoTable.finalY + 20;
 
-  // ========================================================================
-  // LAST PAGE: TERMS & CONDITIONS
-  // ========================================================================
-
-  checkAddPage(100, false);
-  currentY += 20;
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(0, 0, 0);
-
-  doc.text(t.terms, margin + 6, currentY);
-  currentY += 15;
-
-  // Split terms text into lines that fit the page width
-  const termsText1Lines = doc.splitTextToSize(t.termsText1, pageWidth - margin * 2 - 12);
-  const termsText2Lines = doc.splitTextToSize(t.termsText2, pageWidth - margin * 2 - 12);
-
-  termsText1Lines.forEach((line: string) => {
-    doc.text(line, margin + 6, currentY);
-    currentY += 12;
-  });
-
-  currentY += 6; // Add some spacing between paragraphs
-
-  termsText2Lines.forEach((line: string) => {
-    doc.text(line, margin + 6, currentY);
-    currentY += 12;
-  });
-
   return doc;
 };
