@@ -44,8 +44,10 @@ interface ProjectDetails {
   projectDescription: string;
   validity: string;
   headerImages: string[];
-  richTextHTML?: string;
   language?: Language;
+  paymentOnOrder: number;
+  paymentAtStart: number;
+  paymentOnCompletion: number;
 }
 
 /**
@@ -212,24 +214,32 @@ const createPages1And2HTML = (projectDetails: ProjectDetails, t: Translations): 
             ${t.totalRenovation} ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}
           </p>
         </div>
-        <div style="padding-top: 8px; padding-right: 24px; padding-bottom: 0; padding-left: 24px; min-height: 425px;">
-          <h1 style="font-size: 9px; font-weight: bold; color: #111827; margin: 0 0 4px 0;">
-            ${t.workIncludedInQuote}
-          </h1>
-          <div style="font-size: 9px; color: #374151;">
-            ${projectDetails.richTextHTML || ''}
-          </div>
+        <div style="padding-top: 8px; padding-right: 24px; padding-bottom: 0; padding-left: 24px; font-size: 8px; color: #374151; line-height: 1.4;">
+          <p style="margin: 0 0 8px 0; font-weight: bold;">${t.dearSirMadam}</p>
+          <p style="margin: 0 0 4px 0;">${t.quoteIntro} ${t.workLocationIntro} ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')} is detailed below.</p>
+
+          <p style="margin: 8px 0 2px 0; font-weight: bold;">${t.deliveryTitle}</p>
+          <p style="margin: 0 0 4px 0;">${t.deliveryText}</p>
+
+          <p style="margin: 8px 0 2px 0; font-weight: bold;">${t.pricesTitle}</p>
+          <p style="margin: 0 0 4px 0;">${t.pricesText}</p>
+
+          <p style="margin: 8px 0 2px 0; font-weight: bold;">${t.paymentTitle}</p>
+          <p style="margin: 0;">${t.paymentOnOrder} ${projectDetails.paymentOnOrder || 35}%</p>
+          <p style="margin: 0;">${t.paymentAtStart} ${projectDetails.paymentAtStart || 50}%</p>
+          <p style="margin: 0 0 4px 0;">${t.paymentOnCompletion} ${projectDetails.paymentOnCompletion || 15}%</p>
+          <p style="margin: 0 0 4px 0;">${t.paymentTerm}</p>
+
+          <p style="margin: 8px 0 8px 0;">${t.quoteFinalText}</p>
+          <p style="margin: 0 0 8px 0;">${t.signatureText}</p>
+
+          <p style="margin: 8px 0 0 0;">${t.kindRegards}</p>
+          <p style="margin: 0 0 12px 0;">${t.salesTeam}</p>
         </div>
-        <!-- Signature -->
-        <div style="padding: 8px 24px; font-size: 9px;">
-          <p style="margin: 0 0 8px 0;">
-            ${t.signatureText}
-          </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 8px;">
-            <div>
-              <p style="margin: 0;">${t.kindRegards}</p>
-              <p style="margin: 0;">${t.salesTeam}</p>
-            </div>
+        <!-- Signature fields -->
+        <div style="padding: 0 24px; font-size: 9px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div></div>
             <div>
               <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">${t.dateLabel}</p>
               <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">${t.placeLabel}</p>

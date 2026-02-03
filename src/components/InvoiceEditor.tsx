@@ -9,10 +9,6 @@ import { useRouter } from "next/navigation";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Button } from "./ui/button";
-import { EditorState } from "draft-js";
-import { stateToHTML } from "draft-js-export-html";
-import { stateFromHTML } from "draft-js-import-html"; // Replace htmlToDraft with this
-import dynamic from "next/dynamic";
 import { Input } from "./ui/input";
 import { Download, Trash2, Upload } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
@@ -21,18 +17,6 @@ import ReactDOMServer from "react-dom/server";
 import ReportTemplate from "./ReportTemplate";
 import { useRef } from "react";
 import jsPDF from "jspdf";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-
-// Dynamic import for Editor
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="p-4 bg-gray-50 rounded-lg">Loading editor...</div>
-    ),
-  }
-);
 
 interface Item {
   id: number;
@@ -60,8 +44,10 @@ interface ProjectDetails {
   projectDescription: string;
   validity: string;
   headerImages: string[];
-  richTextHTML: string;
   language?: Language;
+  paymentOnOrder: number;
+  paymentAtStart: number;
+  paymentOnCompletion: number;
 }
 
 interface InvoiceEditorProps {
@@ -82,16 +68,12 @@ export default function InvoiceEditor({
   const [isSaving, setIsSaving] = useState(false);
   const [sections, setSections] = useState<Section[]>(initialData.sections);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-  // Initialize project details with editor state
-  const [projectDetails, setProjectDetails] = useState<
-    ProjectDetails & {
-      editorState: EditorState;
-    }
-  >({
+  // Initialize project details
+  const [projectDetails, setProjectDetails] = useState<ProjectDetails>({
     ...initialData.projectDetails,
-    editorState: EditorState.createWithContent(
-      stateFromHTML(initialData.projectDetails.richTextHTML || "")
-    ),
+    paymentOnOrder: initialData.projectDetails.paymentOnOrder || 35,
+    paymentAtStart: initialData.projectDetails.paymentAtStart || 50,
+    paymentOnCompletion: initialData.projectDetails.paymentOnCompletion || 15,
   });
 
   // Initialize the ref in useEffect to avoid server-side rendering issues
@@ -175,12 +157,7 @@ export default function InvoiceEditor({
 
     // Use new PDF generator with smart page breaks
     const doc = await generateInvoicePDF(
-      {
-        ...projectDetails,
-        richTextHTML: stateToHTML(
-          projectDetails.editorState.getCurrentContent()
-        ),
-      },
+      projectDetails,
       sectionsWithCalculations
     );
 
@@ -206,14 +183,6 @@ export default function InvoiceEditor({
     setIsGeneratingPdf(false);
   }
 };
-  const handleEditorChange = (editorState: EditorState) => {
-    setProjectDetails((prev) => ({
-      ...prev,
-      editorState,
-      richTextHTML: stateToHTML(editorState.getCurrentContent()),
-    }));
-  };
-
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -268,9 +237,6 @@ export default function InvoiceEditor({
         sections,
         updatedAt: serverTimestamp(),
       };
-
-      // Clean up the data - remove the editorState field
-      delete dataToSave.projectDetails.editorState;
 
       // console.log(
       //   "Data being saved to Firebase:",
@@ -644,32 +610,54 @@ export default function InvoiceEditor({
         </div>
 
         <div className="mt-6">
-          <h3 className="block text-sm font-medium mb-1">
-            Werkzaamheden opgenomen in deze offerte
-          </h3>
-          <Editor
-            editorState={projectDetails.editorState}
-            onEditorStateChange={handleEditorChange}
-            toolbar={{
-              options: [
-                "inline",
-                "blockType",
-                "list",
-                "textAlign",
-                "link",
-                "history",
-              ],
-              inline: {
-                options: ["bold", "italic", "underline", "strikethrough"],
-              },
-              list: { options: ["unordered", "ordered"] },
-              textAlign: { options: ["left", "center", "right"] },
-              link: { options: ["link"] },
-            }}
-            editorClassName="border p-2 rounded"
-            wrapperClassName="border rounded"
-            toolbarClassName="border-b"
-          />
+          <h3 className="block text-sm font-medium mb-3">Deelbetalingen</h3>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Bij opdracht (%)</label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={projectDetails.paymentOnOrder}
+                onChange={(e) =>
+                  setProjectDetails((prev) => ({
+                    ...prev,
+                    paymentOnOrder: Number(e.target.value),
+                  }))
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Bij aanvang werkzaamheden (%)</label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={projectDetails.paymentAtStart}
+                onChange={(e) =>
+                  setProjectDetails((prev) => ({
+                    ...prev,
+                    paymentAtStart: Number(e.target.value),
+                  }))
+                }
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Bij oplevering (%)</label>
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                value={projectDetails.paymentOnCompletion}
+                onChange={(e) =>
+                  setProjectDetails((prev) => ({
+                    ...prev,
+                    paymentOnCompletion: Number(e.target.value),
+                  }))
+                }
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -888,12 +876,7 @@ export default function InvoiceEditor({
       )}
       <div ref={reportTemplateRef} className="hidden">
         <ReportTemplate
-          projectDetails={{
-            ...projectDetails,
-            richTextHTML: stateToHTML(
-              projectDetails.editorState.getCurrentContent()
-            ),
-          }}
+          projectDetails={projectDetails}
           sections={sections.map((section) => ({
             ...section,
             calculations: {

@@ -11,11 +11,6 @@ import jsPDF from "jspdf";
 import ReportTemplate from "./ReportTemplate";
 import { generateInvoicePDF } from "@/lib/pdfGeneratorWithPageBreaks";
 import type { Language } from "@/lib/translations";
-import { EditorState } from "draft-js";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { stateToHTML } from "draft-js-export-html";
-
-import dynamic from "next/dynamic";
 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase";
@@ -26,13 +21,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import ReactDOMServer from "react-dom/server";
-
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  {
-    ssr: false,
-  }
-);
 
 interface Item {
   id: number;
@@ -60,9 +48,10 @@ interface ProjectDetails {
   projectDescription: string;
   validity: string;
   headerImages: string[];
-  richTextContent: EditorState;
-  richTextHTML?: string;
   language: Language;
+  paymentOnOrder: number;
+  paymentAtStart: number;
+  paymentOnCompletion: number;
 }
 
 interface ProjectDetailsFormProps {
@@ -153,14 +142,6 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
       ...projectDetails,
       headerImages: newImages,
     });
-  };
-
-  // Safeguard against premature state updates
-  const handleEditorChange = (editorState: EditorState) => {
-    setProjectDetails((prevDetails) => ({
-      ...prevDetails,
-      richTextContent: editorState,
-    }));
   };
 
   return (
@@ -319,32 +300,45 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
       </div>
 
       <div className="mt-6">
-        <h3 className=" block text-sm font-medium mb-1">
-          Werkzaamheden opgenomen in deze offerte
-        </h3>
-        <Editor
-          editorState={projectDetails.richTextContent}
-          onEditorStateChange={handleEditorChange}
-          toolbar={{
-            options: [
-              "inline",
-              "blockType",
-              "list",
-              "textAlign",
-              "link",
-              "history",
-            ],
-            inline: {
-              options: ["bold", "italic", "underline", "strikethrough"],
-            },
-            list: { options: ["unordered", "ordered"] },
-            textAlign: { options: ["left", "center", "right"] },
-            link: { options: ["link"] },
-          }}
-          editorClassName="border p-2 rounded"
-          wrapperClassName="border rounded"
-          toolbarClassName="border-b"
-        />
+        <h3 className="block text-sm font-medium mb-3">Deelbetalingen</h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Bij opdracht (%)</label>
+            <Input
+              type="number"
+              min="0"
+              max="100"
+              value={projectDetails.paymentOnOrder}
+              onChange={(e) =>
+                setProjectDetails({ ...projectDetails, paymentOnOrder: Number(e.target.value) })
+              }
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Bij aanvang (%)</label>
+            <Input
+              type="number"
+              min="0"
+              max="100"
+              value={projectDetails.paymentAtStart}
+              onChange={(e) =>
+                setProjectDetails({ ...projectDetails, paymentAtStart: Number(e.target.value) })
+              }
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Bij oplevering (%)</label>
+            <Input
+              type="number"
+              min="0"
+              max="100"
+              value={projectDetails.paymentOnCompletion}
+              onChange={(e) =>
+                setProjectDetails({ ...projectDetails, paymentOnCompletion: Number(e.target.value) })
+              }
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -454,10 +448,7 @@ export default function InvoiceGenerator() {
     try {
       // Use new PDF generator with smart page breaks
       const doc = await generateInvoicePDF(
-        {
-          ...projectDetails,
-          richTextHTML: convertRichTextToHTML(),
-        },
+        projectDetails,
         calculatedSections
       );
 
@@ -648,8 +639,6 @@ export default function InvoiceGenerator() {
         projectDetails: {
           ...projectDetails,
           headerImages: processedHeaderImages,
-          richTextHTML: convertRichTextToHTML(),
-          richTextContent: null,
           createdAt: serverTimestamp(),
         },
         sections: sectionsWithProcessedImages,
@@ -838,13 +827,11 @@ export default function InvoiceGenerator() {
     projectDescription: "",
     validity: "",
     headerImages: [],
-    richTextContent: EditorState.createEmpty(),
     language: "nl",
+    paymentOnOrder: 35,
+    paymentAtStart: 50,
+    paymentOnCompletion: 15,
   });
-
-  const convertRichTextToHTML = () => {
-    return stateToHTML(projectDetails.richTextContent.getCurrentContent());
-  };
 
   const addSection = () => {
     const lastSection = sections[sections.length - 1];
@@ -1370,11 +1357,7 @@ export default function InvoiceGenerator() {
       )}
       <div ref={reportTemplateRef} className="hidden">
         <ReportTemplate
-          // projectDetails={projectDetails}
-          projectDetails={{
-            ...projectDetails,
-            richTextHTML: convertRichTextToHTML(),
-          }}
+          projectDetails={projectDetails}
           sections={calculatedSections}
         />
       </div>

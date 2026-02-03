@@ -31,7 +31,21 @@ export interface Translations {
 
   // Quote page
   quote: string;
-  workIncludedInQuote: string;
+
+  // Quote letter content
+  dearSirMadam: string;
+  quoteIntro: string;
+  workLocationIntro: string;
+  deliveryTitle: string;
+  deliveryText: string;
+  pricesTitle: string;
+  pricesText: string;
+  paymentTitle: string;
+  paymentOnOrder: string;
+  paymentAtStart: string;
+  paymentOnCompletion: string;
+  paymentTerm: string;
+  quoteFinalText: string;
 
   // Signature section
   signatureText: string;
@@ -89,12 +103,26 @@ export const translations: Record<Language, Translations> = {
 
     // Quote page
     quote: 'OFFERTE',
-    workIncludedInQuote: 'Werkzaamheden opgenomen in deze offerte',
+
+    // Quote letter content
+    dearSirMadam: 'Geachte heer/mevrouw,',
+    quoteIntro: 'Hierbij ontvangt u een vrijblijvende offerte voor de levering en uitvoering van de door u aangevraagde producten en diensten.',
+    workLocationIntro: 'De uit te voeren werkzaamheden aan',
+    deliveryTitle: 'Levering/Uitvoering:',
+    deliveryText: 'De werkzaamheden zullen binnen acht weken na de opdracht van start gaan, mits alle benodigde onderdelen, materialen, ontwerpen en bouwrapporten binnen deze termijn door onze leveranciers geleverd kunnen worden. De levering en uitvoering geschieden conform onze algemene voorwaarden, die aan deze offerte zijn toegevoegd. Deze kunnen ook worden opgevraagd via onze website: www.labelbewust.nl en/of via de hierboven vermelde contactgegevens.',
+    pricesTitle: 'Prijzen:',
+    pricesText: 'De prijzen zijn gebaseerd op de volledige uitvoering van de in deze offerte omschreven werkzaamheden. Bij gedeeltelijke aanvaarding behoudt Labelbewust B.V. zich het recht voor om afwijkende prijzen te hanteren.',
+    paymentTitle: 'Betaling:',
+    paymentOnOrder: 'Bij opdracht:',
+    paymentAtStart: 'Bij aanvang werkzaamheden:',
+    paymentOnCompletion: 'Bij oplevering:',
+    paymentTerm: 'Betalingstermijn van 14 dag(en), tenzij schriftelijk anders overeengekomen.',
+    quoteFinalText: 'Deze offerte is vrijblijvend en onder voorbehoud van goedkeuring door de directie van Labelbewust B.V. Uw opdracht voor levering/uitvoering wordt definitief zodra Labelbewust B.V. deze schriftelijk heeft bevestigd of met de uitvoering van de opdracht is begonnen. De geldigheid van deze offerte bedraagt twee weken vanaf de offertedatum. Door ondertekening van deze offerte bevestigt u dat u kennis heeft genomen van onze algemene voorwaarden.',
 
     // Signature section
     signatureText: 'Door ondertekening van deze offerte komt de aannemingsovereenkomst tot stand.',
-    kindRegards: 'Met vriendelijke groet',
-    salesTeam: 'Verkoopteam Labelbewust',
+    kindRegards: 'Met vriendelijke groet,',
+    salesTeam: 'Verkoopteam Labelbewust BV',
     dateLabel: 'Datum:',
     placeLabel: 'Plaats:',
     signatureLabel: 'Handtekening:',
@@ -145,12 +173,26 @@ export const translations: Record<Language, Translations> = {
 
     // Quote page
     quote: 'QUOTE',
-    workIncludedInQuote: 'Work included in this quote',
+
+    // Quote letter content
+    dearSirMadam: 'Dear Sir/Madam,',
+    quoteIntro: 'Attached is a non-binding quotation for the supply and execution of the products and services you requested.',
+    workLocationIntro: 'The work to be carried out at',
+    deliveryTitle: 'Delivery/Execution:',
+    deliveryText: 'Work will commence within eight weeks after the order, provided that all necessary components, materials, designs, and construction reports can be delivered by our suppliers within this timeframe. The delivery and execution will be in accordance with our general terms and conditions, which are attached to this offer. These can also be requested via our website: www.labelbewust.nl and/or through the contact details above.',
+    pricesTitle: 'Prices:',
+    pricesText: 'Prices are based on the full completion of the work outlined in this quotation. In the case of partial acceptance, Labelbewust B.V. reserves the right to apply different prices.',
+    paymentTitle: 'Payment:',
+    paymentOnOrder: 'Upon order:',
+    paymentAtStart: 'At the start of the work:',
+    paymentOnCompletion: 'Upon completion:',
+    paymentTerm: 'Payment term of 14 day(s), unless agreed otherwise in writing.',
+    quoteFinalText: 'This offer is non-binding and is made subject to approval by the management of Labelbewust B.V. Your order for delivery/execution will become final once Labelbewust B.V. has confirmed it in writing or has commenced the execution of the order. The validity of this quotation is two weeks from the date of the offer. By signing this offer, you confirm that you are aware of our general terms and conditions.',
 
     // Signature section
     signatureText: 'By signing this quote, the construction agreement is established.',
-    kindRegards: 'Kind regards',
-    salesTeam: 'Sales Team Labelbewust',
+    kindRegards: 'Kind regards,',
+    salesTeam: 'Sales team Labelbewust BV',
     dateLabel: 'Date:',
     placeLabel: 'Place:',
     signatureLabel: 'Signature:',
