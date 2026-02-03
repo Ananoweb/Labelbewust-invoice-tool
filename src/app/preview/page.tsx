@@ -76,10 +76,13 @@ export default function PreviewPage() {
                 <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
                   ${sampleProjectDetails.projectAddress}
                 </h2>
-                <h4 style="color: #36a965; font-weight: bold; margin: 0 0 20px 0; font-size: 14px;">
+                <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Naam</h4>
+                <h4 style="color: #36a965; font-weight: bold; margin: 0 0 12px 0; font-size: 14px;">
                   ${sampleProjectDetails.clientName}
                 </h4>
-                <p style="font-size: 12px; color: #374151; margin: 0; padding: 0;">${sampleProjectDetails.email}</p>
+                <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Email</h4>
+                <p style="font-size: 12px; color: #374151; margin: 0 0 12px 0; padding: 0;">${sampleProjectDetails.email}</p>
+                <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Telefoon</h4>
                 <p style="font-size: 12px; letter-spacing: 0.05em; color: #374151; margin: 0; padding: 0;">${sampleProjectDetails.phone}</p>
               </div>
               <div style="flex: 1; background-color: #f9f9f9; padding: 16px 16px 48px 24px;">
@@ -97,7 +100,7 @@ export default function PreviewPage() {
                   </div>
                   <div>
                     <div style="color: black; font-size: 11px; font-weight: bold;">Kenmerk</div>
-                    <div style="font-size: 11px; color: #36a965;">Totaal renovatie ${sampleProjectDetails.projectAddress}</div>
+                    <div style="font-size: 11px; color: #36a965;">Totaalrenovatie ${(sampleProjectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}</div>
                   </div>
                   <div>
                     <div style="color: black; font-size: 11px; font-weight: bold;">Geldigheid</div>
@@ -127,10 +130,10 @@ export default function PreviewPage() {
                     <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Nieuwbouw
                   </li>
                   <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Staaframe bouw
+                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Verduurzaming
                   </li>
                   <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Hallenbouw
+                    <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Warmtepompen
                   </li>
                 </ul>
               </div>
@@ -141,7 +144,7 @@ export default function PreviewPage() {
                   Labelbewust
                 </span>
                 <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 8px; color: white; z-index: 30;">
-                  Een aannemer op wie je kunt bouwen
+                  De aannemer op wie je kan bouwen
                 </span>
               </div>
             </div>
@@ -167,7 +170,7 @@ export default function PreviewPage() {
               </p>
               <p style="color: #374151; margin: 0; padding: 0; letter-spacing: 0.05em; font-size: 9px;">${sampleProjectDetails.date}</p>
               <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">
-                Totaal renovatie ${sampleProjectDetails.projectAddress}
+                Totaalrenovatie ${(sampleProjectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}
               </p>
             </div>
             <div style="padding: 8px 24px; min-height: 370px;">

@@ -5,16 +5,14 @@
 import { useEffect, useRef } from "react";
 import React, { useState } from "react";
 import { Input } from "./ui/input";
+import { AutocompleteInput } from "./ui/AutocompleteInput";
+import { useAutocomplete } from "@/hooks/useAutocomplete";
 import { Button } from "./ui/button";
 import { Plus, Trash2, Download, Upload, Save, X } from "lucide-react";
 import jsPDF from "jspdf";
 import ReportTemplate from "./ReportTemplate";
 import { generateInvoicePDF } from "@/lib/pdfGeneratorWithPageBreaks";
-import { EditorState } from "draft-js";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { stateToHTML } from "draft-js-export-html";
-
-import dynamic from "next/dynamic";
+import type { Language } from "@/lib/translations";
 
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, storage } from "@/lib/firebase";
@@ -25,13 +23,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/navigation";
 import ReactDOMServer from "react-dom/server";
-
-const Editor = dynamic(
-  () => import("react-draft-wysiwyg").then((mod) => mod.Editor),
-  {
-    ssr: false,
-  }
-);
 
 interface Item {
   id: number;
@@ -59,8 +50,10 @@ interface ProjectDetails {
   projectDescription: string;
   validity: string;
   headerImages: string[];
-  richTextContent: EditorState;
-  richTextHTML?: string;
+  language: Language;
+  paymentOnOrder: number;
+  paymentAtStart: number;
+  paymentOnCompletion: number;
 }
 
 interface ProjectDetailsFormProps {
@@ -151,14 +144,6 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
       ...projectDetails,
       headerImages: newImages,
     });
-  };
-
-  // Safeguard against premature state updates
-  const handleEditorChange = (editorState: EditorState) => {
-    setProjectDetails((prevDetails) => ({
-      ...prevDetails,
-      richTextContent: editorState,
-    }));
   };
 
   return (
@@ -281,7 +266,7 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             Projectomschrijving
           </label>
           <Input
-            placeholder="Totaal renovatie Vossiusstraat 39"
+            placeholder="Totaalrenovatie Vossiusstraat 39"
             value={projectDetails.projectDescription}
             onChange={(e) =>
               setProjectDetails({
@@ -301,35 +286,61 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
             }
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">PDF Taal</label>
+          <select
+            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            value={projectDetails.language}
+            onChange={(e) =>
+              setProjectDetails({ ...projectDetails, language: e.target.value as Language })
+            }
+          >
+            <option value="nl">Nederlands</option>
+            <option value="en">English</option>
+          </select>
+        </div>
       </div>
 
       <div className="mt-6">
-        <h3 className=" block text-sm font-medium mb-1">
-          Werkzaamheden opgenomen in deze offerte
-        </h3>
-        <Editor
-          editorState={projectDetails.richTextContent}
-          onEditorStateChange={handleEditorChange}
-          toolbar={{
-            options: [
-              "inline",
-              "blockType",
-              "list",
-              "textAlign",
-              "link",
-              "history",
-            ],
-            inline: {
-              options: ["bold", "italic", "underline", "strikethrough"],
-            },
-            list: { options: ["unordered", "ordered"] },
-            textAlign: { options: ["left", "center", "right"] },
-            link: { options: ["link"] },
-          }}
-          editorClassName="border p-2 rounded"
-          wrapperClassName="border rounded"
-          toolbarClassName="border-b"
-        />
+        <h3 className="block text-sm font-medium mb-3">Deelbetalingen</h3>
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Bij opdracht (%)</label>
+            <Input
+              type="number"
+              min="0"
+              max="100"
+              value={projectDetails.paymentOnOrder}
+              onChange={(e) =>
+                setProjectDetails({ ...projectDetails, paymentOnOrder: Number(e.target.value) })
+              }
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Bij aanvang (%)</label>
+            <Input
+              type="number"
+              min="0"
+              max="100"
+              value={projectDetails.paymentAtStart}
+              onChange={(e) =>
+                setProjectDetails({ ...projectDetails, paymentAtStart: Number(e.target.value) })
+              }
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Bij oplevering (%)</label>
+            <Input
+              type="number"
+              min="0"
+              max="100"
+              value={projectDetails.paymentOnCompletion}
+              onChange={(e) =>
+                setProjectDetails({ ...projectDetails, paymentOnCompletion: Number(e.target.value) })
+              }
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -351,6 +362,10 @@ export default function InvoiceGenerator() {
 
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+
+  // Autocomplete hooks for section titles and item descriptions
+  const titleAutocomplete = useAutocomplete('titles');
+  const descriptionAutocomplete = useAutocomplete('descriptions');
 
   // Add this state to your component
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -439,10 +454,7 @@ export default function InvoiceGenerator() {
     try {
       // Use new PDF generator with smart page breaks
       const doc = await generateInvoicePDF(
-        {
-          ...projectDetails,
-          richTextHTML: convertRichTextToHTML(),
-        },
+        projectDetails,
         calculatedSections
       );
 
@@ -633,8 +645,6 @@ export default function InvoiceGenerator() {
         projectDetails: {
           ...projectDetails,
           headerImages: processedHeaderImages,
-          richTextHTML: convertRichTextToHTML(),
-          richTextContent: null,
           createdAt: serverTimestamp(),
         },
         sections: sectionsWithProcessedImages,
@@ -806,7 +816,7 @@ export default function InvoiceGenerator() {
 
   const [sections, setSections] = useState<Section[]>([
     {
-      id: "0.00",
+      id: "01.00",
       title: "Voor het werk geldende voorwaarden uav 2012",
       items: [],
       vatRate: 0,
@@ -823,12 +833,11 @@ export default function InvoiceGenerator() {
     projectDescription: "",
     validity: "",
     headerImages: [],
-    richTextContent: EditorState.createEmpty(),
+    language: "nl",
+    paymentOnOrder: 35,
+    paymentAtStart: 50,
+    paymentOnCompletion: 15,
   });
-
-  const convertRichTextToHTML = () => {
-    return stateToHTML(projectDetails.richTextContent.getCurrentContent());
-  };
 
   const addSection = () => {
     const lastSection = sections[sections.length - 1];
@@ -847,7 +856,7 @@ export default function InvoiceGenerator() {
   };
   const deleteSection = (sectionId: string) => {
     // Prevent deleting the first section
-    if (sectionId === "0.00") return;
+    if (sectionId === "01.00") return;
 
     if (
       confirm("Weet je zeker dat je deze sectie en alle items wilt verwijderen?")
@@ -990,7 +999,7 @@ export default function InvoiceGenerator() {
             {/* <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3> */}
             <div className="flex justify-between items-start">
               <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3>
-              {section.id !== "0.00" && (
+              {section.id !== "01.00" && (
                 <button
                   onClick={() => deleteSection(section.id)}
                   className="transition-all duration-200 ease-in-out transform hover:scale-110 text-red-500 hover:text-red-600 p-1"
@@ -1001,16 +1010,20 @@ export default function InvoiceGenerator() {
               )}
             </div>
             <div className="mb-4">
-              <Input
+              <AutocompleteInput
                 placeholder="Sectie Titel"
                 value={section.title}
-                onChange={(e) =>
+                onChange={(value) =>
                   setSections(
                     sections.map((s) =>
-                      s.id === section.id ? { ...s, title: e.target.value } : s
+                      s.id === section.id ? { ...s, title: value } : s
                     )
                   )
                 }
+                suggestions={titleAutocomplete.suggestions}
+                onSaveSuggestion={titleAutocomplete.saveSuggestion}
+                onRemoveSuggestion={titleAutocomplete.removeSuggestion}
+                getFilteredSuggestions={titleAutocomplete.getFilteredSuggestions}
               />
             </div>
 
@@ -1029,16 +1042,21 @@ export default function InvoiceGenerator() {
                 {section.items.map((item) => (
                   <tr key={item.id} className="border-b">
                     <td className="py-2">
-                      <Input
+                      <AutocompleteInput
                         value={item.description}
-                        onChange={(e) =>
+                        onChange={(value) =>
                           updateItem(
                             section.id,
                             item.id,
                             "description",
-                            e.target.value
+                            value
                           )
                         }
+                        placeholder="Omschrijving"
+                        suggestions={descriptionAutocomplete.suggestions}
+                        onSaveSuggestion={descriptionAutocomplete.saveSuggestion}
+                        onRemoveSuggestion={descriptionAutocomplete.removeSuggestion}
+                        getFilteredSuggestions={descriptionAutocomplete.getFilteredSuggestions}
                       />
                     </td>
                     <td className="py-2">
@@ -1354,11 +1372,7 @@ export default function InvoiceGenerator() {
       )}
       <div ref={reportTemplateRef} className="hidden">
         <ReportTemplate
-          // projectDetails={projectDetails}
-          projectDetails={{
-            ...projectDetails,
-            richTextHTML: convertRichTextToHTML(),
-          }}
+          projectDetails={projectDetails}
           sections={calculatedSections}
         />
       </div>

@@ -64,12 +64,15 @@ const ReportTemplate = ({ projectDetails, sections }) => {
             <h2 className=" text-[#257044] text-xl font-bold leading-6 mb-5">
               {projectDetails.projectAddress}
             </h2>
-            <h4 className="text-[#36a965] font-bold mb-5 text-sm">
+            <h4 className="text-black text-[10px] font-bold">Naam</h4>
+            <h4 className="text-[#36a965] font-bold mb-3 text-sm">
               {projectDetails.clientName}
             </h4>
-            <p className="text-xs text-gray-700 m-0 p-0">
+            <h4 className="text-black text-[10px] font-bold">Email</h4>
+            <p className="text-xs text-gray-700 m-0 p-0 mb-3">
               {projectDetails.email}
             </p>
+            <h4 className="text-black text-[10px] font-bold">Telefoon</h4>
             <p className="text-xs tracking-widest text-gray-700">
               {projectDetails.phone}
             </p>
@@ -96,7 +99,7 @@ const ReportTemplate = ({ projectDetails, sections }) => {
               <div>
                 <div className="text-black text-[11px] font-bold">Kenmerk</div>
                 <div className="text-[11px] text-[#36a965]">
-                  Totaal renovatie {projectDetails.projectAddress}
+                  Totaalrenovatie {projectDetails.projectAddress?.trim().replace(/\s+/g, ' ')}
                 </div>
               </div>
               <div>
@@ -140,11 +143,11 @@ const ReportTemplate = ({ projectDetails, sections }) => {
               </li>
               <li className="flex items-center mb-2 text-white font-semibold">
                 <span className="text-green-400 mr-2 text-xs">✓</span>
-                Staaframe bouw
+                Verduurzaming
               </li>
               <li className="flex items-center mb-2 text-white font-semibold">
                 <span className="text-green-400 mr-2 text-xs">✓</span>
-                Hallenbouw
+                Warmtepompen
               </li>
             </ul>
           </div>
@@ -163,7 +166,7 @@ const ReportTemplate = ({ projectDetails, sections }) => {
               Labelbewust
             </span>
             <span className="font-bold text-[11px] absolute right-6 bottom-3 text-white">
-              Een aannemer op wie je kunt bouwen
+              De aannemer op wie je kan bouwen
             </span>
           </div>
         </div>
@@ -207,7 +210,7 @@ const ReportTemplate = ({ projectDetails, sections }) => {
             {projectDetails.date}
           </p>
           <p className="text-gray-700 m-0 p-0 text-[9px]">
-            Totaal renovatie {projectDetails.projectAddress}
+            Totaalrenovatie {projectDetails.projectAddress?.trim().replace(/\s+/g, ' ')}
           </p>
         </div>
         <div className="px-6 pt-2 h-[23.2rem]">

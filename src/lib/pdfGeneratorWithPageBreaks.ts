@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { getTranslations, type Language, type Translations } from './translations';
 
 // Import images as base64 or paths
 import headerLogoImage from '../image/header_logo.png';
@@ -43,7 +44,10 @@ interface ProjectDetails {
   projectDescription: string;
   validity: string;
   headerImages: string[];
-  richTextHTML?: string;
+  language?: Language;
+  paymentOnOrder: number;
+  paymentAtStart: number;
+  paymentOnCompletion: number;
 }
 
 /**
@@ -66,7 +70,7 @@ const getImageDataUrl = async (imageSrc: any): Promise<string> => {
 /**
  * Helper function to create HTML for pages 1-2 (using original ReportTemplate style)
  */
-const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
+const createPages1And2HTML = (projectDetails: ProjectDetails, t: Translations): string => {
   const headerShapeSrc = typeof headerShapeImage === 'string' ? headerShapeImage : headerShapeImage.src;
   const headerLogoSrc = typeof headerLogoImage === 'string' ? headerLogoImage : headerLogoImage.src;
   const noImageSrc = typeof noImage === 'string' ? noImage : noImage.src;
@@ -102,35 +106,38 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         <!-- Project Details -->
         <div style="display: flex;  padding-left: 8px;">
           <div style="flex: 1; background-color: white; padding: 0 16px 0 16px; height: 231px;">
-            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0 0 8px 0;">Project adres</h4>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0 0 8px 0;">${t.projectAddress}</h4>
             <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
               ${projectDetails.projectAddress}
             </h2>
-            <h4 style="color: #36a965; font-weight: bold; margin: 0 0 20px 0; font-size: 14px;">
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">${t.name}</h4>
+            <h4 style="color: #36a965; font-weight: bold; margin: 0 0 12px 0; font-size: 14px;">
               ${projectDetails.clientName}
             </h4>
-            <p style="font-size: 12px; color: #374151; margin: 0; padding: 0;">${projectDetails.email}</p>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">${t.email}</h4>
+            <p style="font-size: 12px; color: #374151; margin: 0 0 12px 0; padding: 0;">${projectDetails.email}</p>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">${t.phone}</h4>
             <p style="font-size: 12px; letter-spacing: 0.05em; color: #374151; margin: 0; padding: 0;">${projectDetails.phone}</p>
           </div>
           <div style="flex: 1; background-color: #f9f9f9; padding: 0 16px 0 24px; height: 231px;">
             <h2 style="color: black; font-size: 20px; font-weight: bold; line-height: 24px; margin: 16px 0 24px 0; text-align: center;">
-              Project details
+              ${t.projectDetails}
             </h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Datum</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.date}</div>
                 <div style="font-size: 11px; color: #36a965; letter-spacing: 0.05em; word-wrap: break-word; white-space: normal;">${projectDetails.date}</div>
               </div>
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Offertenummer</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.quoteNumber}</div>
                 <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${projectDetails.invoiceNumber}</div>
               </div>
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Kenmerk</div>
-                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">Totaal renovatie ${projectDetails.projectAddress}</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.reference}</div>
+                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${t.totalRenovation} ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}</div>
               </div>
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Geldigheid</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.validity}</div>
                 <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${projectDetails.validity}</div>
               </div>
             </div>
@@ -141,26 +148,26 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           <img src="${bannerSrc}" alt="Banner" style="height: 330px; width: 100%; object-fit: cover;" />
           <div style="position: absolute; left: 16px; top: 48px;">
             <h2 style="font-weight: bold; font-size: 20px; margin-bottom: 4px; color: white;">
-               De aannemer van Nederland
+               ${t.companySlogan}
             </h2>
             <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; font-size: 12px; margin: 0;">
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Ruwbouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.roughConstruction}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Totaalrenovatie
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.totalRenovation}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Sloopwerk
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.demolitionWork}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Nieuwbouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.newConstruction}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Staaframe bouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.sustainabilityService}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Hallenbouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.heatPumps}
               </li>
             </ul>
           </div>
@@ -171,7 +178,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
               Labelbewust
             </span>
             <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 15px; color: white; z-index: 30;">
-              Een aannemer op wie je kunt bouwen
+              ${t.companyTagline}
             </span>
           </div>
         </div>
@@ -187,7 +194,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         <img src="${headerWhiteLogoSrc}" alt="Banner" style="height: 56px; width: 160px; position: absolute; top: 8px; left: 16px;" />
         <img src="${triSquareRevSrc}" alt="Banner" style="height: 80px; width: 80px; object-fit: contain; position: absolute; top: -4px; right: -8px;" />
         <span style="color: #257044; font-size: 30px; font-weight: bold; position: absolute; left: 280px; top: 2px; letter-spacing: 0.05em;">
-          OFFERTE
+          ${t.quote}
         </span>
       </header>
       <section style="max-width: 595px; width: 100%; background-color: white; padding-top: 8px; word-break: break-all; position: relative; height: calc(842px - 80px);">
@@ -195,48 +202,57 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           <h2 style="color: #15803d; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;">
             ${projectDetails.clientName}
           </h2>
-          <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">${projectDetails.email}</p>
+          <p style="color: black; font-weight: bold; margin: 0; padding: 0; font-size: 9px;">${t.email}</p>
+          <p style="color: #374151; margin: 0 0 4px 0; padding: 0; font-size: 9px;">${projectDetails.email}</p>
+          <p style="color: black; font-weight: bold; margin: 0; padding: 0; font-size: 9px;">${t.phoneNumber}</p>
           <p style="color: #374151; letter-spacing: 0.05em; margin: 0; padding: 0; font-size: 9px;">${projectDetails.phone}</p>
-          <p style="color: #374151; margin: 16px 0 0 0; padding: 0; font-size: 9px;">
-            Offertenummer ${projectDetails.invoiceNumber}
+          <p style="color: #374151; margin: 12px 0 0 0; padding: 0; font-size: 9px;">
+            ${t.quoteNumber} ${projectDetails.invoiceNumber}
           </p>
           <p style="color: #374151; margin: 0; padding: 0; letter-spacing: 0.05em; font-size: 9px;">${projectDetails.date}</p>
           <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">
-            Totaal renovatie ${projectDetails.projectAddress}
+            ${t.totalRenovation} ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}
           </p>
         </div>
-        <div style="padding-top: 8px; padding-right: 24px; padding-bottom: 0; padding-left: 24px; min-height: 425px;">
-          <h1 style="font-size: 9px; font-weight: bold; color: #111827; margin: 0 0 4px 0;">
-            Werkzaamheden opgenomen in deze offerte
-          </h1>
-          <div style="font-size: 9px; color: #374151;">
-            ${projectDetails.richTextHTML || ''}
-          </div>
+        <div style="padding-top: 8px; padding-right: 24px; padding-bottom: 0; padding-left: 24px; font-size: 8px; color: #374151; line-height: 1.4;">
+          <p style="margin: 0 0 8px 0; font-weight: bold;">${t.dearSirMadam}</p>
+          <p style="margin: 0 0 4px 0;">${t.quoteIntro} ${t.workLocationIntro} ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')} is detailed below.</p>
+
+          <p style="margin: 8px 0 2px 0; font-weight: bold;">${t.deliveryTitle}</p>
+          <p style="margin: 0 0 4px 0;">${t.deliveryText}</p>
+
+          <p style="margin: 8px 0 2px 0; font-weight: bold;">${t.pricesTitle}</p>
+          <p style="margin: 0 0 4px 0;">${t.pricesText}</p>
+
+          <p style="margin: 8px 0 2px 0; font-weight: bold;">${t.paymentTitle}</p>
+          <p style="margin: 0;">${t.paymentOnOrder} ${projectDetails.paymentOnOrder || 35}%</p>
+          <p style="margin: 0;">${t.paymentAtStart} ${projectDetails.paymentAtStart || 50}%</p>
+          <p style="margin: 0 0 4px 0;">${t.paymentOnCompletion} ${projectDetails.paymentOnCompletion || 15}%</p>
+          <p style="margin: 0 0 4px 0;">${t.paymentTerm}</p>
+
+          <p style="margin: 8px 0 8px 0;">${t.quoteFinalText}</p>
+          <p style="margin: 0 0 8px 0;">${t.signatureText}</p>
+
+          <p style="margin: 8px 0 0 0;">${t.kindRegards}</p>
+          <p style="margin: 0 0 12px 0;">${t.salesTeam}</p>
         </div>
-        <!-- Signature -->
-        <div style="padding: 8px 24px; font-size: 9px;">
-          <p style="margin: 0 0 8px 0;">
-            Door ondertekening van deze offerte komt de aannemingsovereenkomst
-            tot stand.
-          </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 8px;">
+        <!-- Signature fields -->
+        <div style="padding: 0 24px; font-size: 9px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div></div>
             <div>
-              <p style="margin: 0;">Met vriendelijke groet</p>
-              <p style="margin: 0;">Verkoopteam Labelbewust</p>
-            </div>
-            <div>
-              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">Datum:</p>
-              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">Plaats:</p>
-              <p style="padding-bottom: 12px; margin: 0;">Handtekening:</p>
+              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">${t.dateLabel}</p>
+              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">${t.placeLabel}</p>
+              <p style="padding-bottom: 12px; margin: 0;">${t.signatureLabel}</p>
             </div>
           </div>
         </div>
         <div style="position: absolute; bottom: -5px; left: 0; width: 100%; z-index: 20;">
           <img src="${triSquareFooterSrc}" alt="Banner" style="object-fit: cover; height: auto; width: 80%; margin-left: -16px;" />
           <div style="width: 80%; display: flex; gap: 55px; font-weight: bold; font-size: 11px; position: absolute; color: white; z-index: 30; bottom: 6px; padding-left: 20px; font-size: 14px>
-            <p>Renovatie</p>
-            <p>Verduurzaming</p>
-            <p>Nieuwbouw</p>
+            <p>${t.renovation}</p>
+            <p>${t.sustainability}</p>
+            <p>${t.newConstruction}</p>
           </div>
         </div>
       </section>
@@ -252,6 +268,10 @@ export const generateInvoicePDF = async (
   projectDetails: ProjectDetails,
   sections: Section[]
 ): Promise<jsPDF> => {
+  // Get translations based on language (default to Dutch)
+  const language = projectDetails.language || 'nl';
+  const t = getTranslations(language);
+
   const doc = new jsPDF({
     format: 'a4',
     unit: 'px',
@@ -306,11 +326,11 @@ export const generateInvoicePDF = async (
       console.warn('Could not load header images:', error);
     }
 
-    // Add "OFFERTE" text
+    // Add "OFFERTE" / "QUOTE" text
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(30);
     doc.setTextColor(37, 112, 68); // #257044
-    doc.text('OFFERTE', pageWidth /2, headerStartY + 42);
+    doc.text(t.quote, pageWidth /2, headerStartY + 42);
 
     currentY = headerHeight + margin; // Set currentY to after header plus margin
   };
@@ -320,7 +340,7 @@ export const generateInvoicePDF = async (
   // ========================================================================
 
   // Create HTML for pages 1 and 2
-  const pages1And2HTML = createPages1And2HTML(projectDetails);
+  const pages1And2HTML = createPages1And2HTML(projectDetails, t);
 
   // Create a temporary div and render HTML to PDF
   if (typeof window !== 'undefined') {
@@ -372,22 +392,28 @@ export const generateInvoicePDF = async (
     const tableHead = [
       [
         `${section.id} ${section.title}`,
-        'Aantal',
-        'Eenheid',
-        'Prijs',
-        'Subtotaal',
-        'BTW'
+        t.quantity,
+        t.price,
+        t.subtotal,
+        t.vat
       ]
     ];
 
     const tableBody: any[] = [];
 
+    // Track which rows have images for later rendering
+    const rowsWithImages: { rowIndex: number; imageUrl: string }[] = [];
+
     // Add item rows
-    section.items.forEach((item) => {
+    section.items.forEach((item, itemIndex) => {
+      // Track if this item has an image
+      if (item.imageUrl) {
+        rowsWithImages.push({ rowIndex: itemIndex, imageUrl: item.imageUrl });
+      }
+
       tableBody.push([
         item.description || ' ',
         item.quantity?.toString() || '-',
-        item.unit || '-',
         `€ ${item.price?.toFixed(2) || '-'}`,
         `€ ${(item.quantity * item.price)?.toFixed(2) || '-'}`,
         `${item.vatRate}%`
@@ -396,7 +422,7 @@ export const generateInvoicePDF = async (
 
     // Add subtotal row
     tableBody.push([
-      { content: 'Subtotaal', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: t.subtotal, colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
       `€ ${section.calculations.subtotal.toFixed(2)}`,
       ''
     ]);
@@ -404,7 +430,7 @@ export const generateInvoicePDF = async (
     // Add VAT detail rows
     Object.entries(section.calculations.vatDetails).forEach(([rate, amount]) => {
       tableBody.push([
-        { content: `VAT (${rate}%):`, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+        { content: `${t.vatPercent} (${rate}%):`, colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
         `€ ${amount.toFixed(2)}`,
         ''
       ]);
@@ -412,7 +438,7 @@ export const generateInvoicePDF = async (
 
     // Add total row
     tableBody.push([
-      { content: 'Subtotaal incl. BTW', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: t.subtotalInclVat, colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
       `€ ${section.calculations.total.toFixed(2)}`,
       ''
     ]);
@@ -427,6 +453,7 @@ export const generateInvoicePDF = async (
         fontSize: 8,
         cellPadding: 6,
         font: 'helvetica',
+        minCellHeight: 20,
       },
       headStyles: {
         fillColor: [37, 112, 68], // #257044 for first column
@@ -435,17 +462,42 @@ export const generateInvoicePDF = async (
         halign: 'left',
       },
       columnStyles: {
-        0: { cellWidth: 200, fontStyle: 'normal', fillColor: undefined, textColor: [0, 0, 0] },
+        0: { cellWidth: 260, fontStyle: 'normal', fillColor: undefined, textColor: [0, 0, 0] },
         1: { cellWidth: 50, halign: 'left', textColor: [54, 169, 101] },
         2: { cellWidth: 60, halign: 'left', textColor: [54, 169, 101] },
-        3: { cellWidth: 60, halign: 'left', textColor: [54, 169, 101] },
-        4: { cellWidth: 80, halign: 'left', textColor: [54, 169, 101] },
-        5: { cellWidth: 45, halign: 'left', textColor: [54, 169, 101] },
+        3: { cellWidth: 80, halign: 'left', textColor: [54, 169, 101] },
+        4: { cellWidth: 45, halign: 'left', textColor: [54, 169, 101] },
       },
       margin: { left: margin, right: margin, top: 10, bottom: margin },
       pageBreak: 'auto',
-      rowPageBreak: 'avoid', // THIS IS THE KEY - prevents rows from splitting
+      rowPageBreak: 'avoid',
       showHead: 'everyPage',
+      // Add extra height for rows with images
+      didParseCell: (data) => {
+        if (data.section === 'body' && data.column.index === 0) {
+          const rowWithImage = rowsWithImages.find(r => r.rowIndex === data.row.index);
+          if (rowWithImage) {
+            data.cell.styles.minCellHeight = 60; // Make room for image
+          }
+        }
+      },
+      // Draw images in cells
+      didDrawCell: (data) => {
+        if (data.section === 'body' && data.column.index === 0) {
+          const rowWithImage = rowsWithImages.find(r => r.rowIndex === data.row.index);
+          if (rowWithImage && rowWithImage.imageUrl) {
+            try {
+              const imgWidth = 45;
+              const imgHeight = 45;
+              const imgX = data.cell.x + 5;
+              const imgY = data.cell.y + data.cell.height - imgHeight - 5;
+              doc.addImage(rowWithImage.imageUrl, 'JPEG', imgX, imgY, imgWidth, imgHeight);
+            } catch (error) {
+              console.warn('Could not add item image:', error);
+            }
+          }
+        }
+      },
     });
 
     // Update currentY after table
@@ -458,32 +510,105 @@ export const generateInvoicePDF = async (
   }
 
   // ========================================================================
-  // LAST PAGE: TERMS & CONDITIONS
+  // TOTALS OVERVIEW TABLE
   // ========================================================================
 
-  checkAddPage(100, false);
-  currentY += 20;
+  // Calculate grand totals
+  let grandSubtotal = 0;
+  let grandVat = 0;
+  let grandTotal = 0;
 
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(0, 0, 0);
+  sections.forEach((section) => {
+    grandSubtotal += section.calculations.subtotal;
+    Object.values(section.calculations.vatDetails).forEach((vatAmount) => {
+      grandVat += vatAmount;
+    });
+    grandTotal += section.calculations.total;
+  });
 
-  doc.text('Voorwaarden', margin + 6, currentY);
-  currentY += 15;
+  // Check if we need a new page for totals table
+  const totalsTableHeight = (sections.length + 4) * 20 + 60; // Estimate height
+  checkAddPage(totalsTableHeight, false);
+  currentY += 10;
 
-  const terms = [
-    'Op deze aanbieding zijn de UAV 2012 van toepassing met onderstaande',
-    'afwijkingen:',
-    '',
-    'In het geval dat bepalingen in deze offerte strijdig zijn met',
-    'bepalingen uit een eerder gesloten raamovereenkomst met dezelfde',
-    'opdrachtgever, prevaleren de bepalingen uit de raamovereenkomst.',
+  // Prepare totals table data
+  const totalsHead = [
+    [
+      t.totals,
+      t.totalExclVat,
+      `${t.vat}:`,
+      t.totalInclVat
+    ]
   ];
 
-  terms.forEach((line) => {
-    doc.text(line, margin + 6, currentY);
-    currentY += 12;
+  const totalsBody: any[] = [];
+
+  // Add each section row
+  sections.forEach((section) => {
+    const sectionVat = Object.values(section.calculations.vatDetails).reduce((sum, amount) => sum + amount, 0);
+    totalsBody.push([
+      `${section.id} ${section.title}`,
+      `€ ${section.calculations.subtotal.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      `€ ${sectionVat.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      `€ ${section.calculations.total.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    ]);
   });
+
+  // Add empty row for spacing
+  totalsBody.push(['', '', '', '']);
+
+  // Add grand total rows
+  totalsBody.push([
+    { content: '', colSpan: 1 },
+    { content: '', colSpan: 1 },
+    { content: `${t.subtotal}:`, styles: { halign: 'right', fontStyle: 'bold' } },
+    `€ ${grandSubtotal.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  ]);
+
+  totalsBody.push([
+    { content: '', colSpan: 1 },
+    { content: '', colSpan: 1 },
+    { content: `${t.vat}`, styles: { halign: 'right', fontStyle: 'bold' } },
+    `€ ${grandVat.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  ]);
+
+  totalsBody.push([
+    { content: '', colSpan: 1 },
+    { content: '', colSpan: 1 },
+    { content: `${t.subtotalInclVat}`, styles: { halign: 'right', fontStyle: 'bold' } },
+    { content: `€ ${grandTotal.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, styles: { fontStyle: 'bold' } }
+  ]);
+
+  // Render totals table
+  autoTable(doc, {
+    startY: currentY,
+    head: totalsHead,
+    body: totalsBody,
+    theme: 'plain',
+    styles: {
+      fontSize: 8,
+      cellPadding: 6,
+      font: 'helvetica',
+    },
+    headStyles: {
+      fillColor: [37, 112, 68], // #257044
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      halign: 'left',
+    },
+    columnStyles: {
+      0: { cellWidth: 200, fontStyle: 'normal', fillColor: undefined, textColor: [0, 0, 0] },
+      1: { cellWidth: 100, halign: 'right', textColor: [54, 169, 101] },
+      2: { cellWidth: 100, halign: 'right', textColor: [54, 169, 101] },
+      3: { cellWidth: 95, halign: 'right', textColor: [54, 169, 101] },
+    },
+    margin: { left: margin, right: margin, top: 10, bottom: margin },
+    pageBreak: 'auto',
+    rowPageBreak: 'avoid',
+  });
+
+  // Update currentY after totals table
+  currentY = (doc as any).lastAutoTable.finalY + 20;
 
   return doc;
 };
