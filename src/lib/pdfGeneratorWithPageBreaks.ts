@@ -510,6 +510,107 @@ export const generateInvoicePDF = async (
   }
 
   // ========================================================================
+  // TOTALS OVERVIEW TABLE
+  // ========================================================================
+
+  // Calculate grand totals
+  let grandSubtotal = 0;
+  let grandVat = 0;
+  let grandTotal = 0;
+
+  sections.forEach((section) => {
+    grandSubtotal += section.calculations.subtotal;
+    Object.values(section.calculations.vatDetails).forEach((vatAmount) => {
+      grandVat += vatAmount;
+    });
+    grandTotal += section.calculations.total;
+  });
+
+  // Check if we need a new page for totals table
+  const totalsTableHeight = (sections.length + 4) * 20 + 60; // Estimate height
+  checkAddPage(totalsTableHeight, false);
+  currentY += 10;
+
+  // Prepare totals table data
+  const totalsHead = [
+    [
+      t.totals,
+      t.totalExclVat,
+      `${t.vat}:`,
+      t.totalInclVat
+    ]
+  ];
+
+  const totalsBody: any[] = [];
+
+  // Add each section row
+  sections.forEach((section) => {
+    const sectionVat = Object.values(section.calculations.vatDetails).reduce((sum, amount) => sum + amount, 0);
+    totalsBody.push([
+      `${section.id} ${section.title}`,
+      `€ ${section.calculations.subtotal.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      `€ ${sectionVat.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      `€ ${section.calculations.total.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    ]);
+  });
+
+  // Add empty row for spacing
+  totalsBody.push(['', '', '', '']);
+
+  // Add grand total rows
+  totalsBody.push([
+    { content: '', colSpan: 1 },
+    { content: '', colSpan: 1 },
+    { content: `${t.subtotal}:`, styles: { halign: 'right', fontStyle: 'bold' } },
+    `€ ${grandSubtotal.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  ]);
+
+  totalsBody.push([
+    { content: '', colSpan: 1 },
+    { content: '', colSpan: 1 },
+    { content: `${t.vat}`, styles: { halign: 'right', fontStyle: 'bold' } },
+    `€ ${grandVat.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  ]);
+
+  totalsBody.push([
+    { content: '', colSpan: 1 },
+    { content: '', colSpan: 1 },
+    { content: `${t.subtotalInclVat}`, styles: { halign: 'right', fontStyle: 'bold' } },
+    { content: `€ ${grandTotal.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, styles: { fontStyle: 'bold' } }
+  ]);
+
+  // Render totals table
+  autoTable(doc, {
+    startY: currentY,
+    head: totalsHead,
+    body: totalsBody,
+    theme: 'plain',
+    styles: {
+      fontSize: 8,
+      cellPadding: 6,
+      font: 'helvetica',
+    },
+    headStyles: {
+      fillColor: [37, 112, 68], // #257044
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+      halign: 'left',
+    },
+    columnStyles: {
+      0: { cellWidth: 200, fontStyle: 'normal', fillColor: undefined, textColor: [0, 0, 0] },
+      1: { cellWidth: 100, halign: 'right', textColor: [54, 169, 101] },
+      2: { cellWidth: 100, halign: 'right', textColor: [54, 169, 101] },
+      3: { cellWidth: 95, halign: 'right', textColor: [54, 169, 101] },
+    },
+    margin: { left: margin, right: margin, top: 10, bottom: margin },
+    pageBreak: 'auto',
+    rowPageBreak: 'avoid',
+  });
+
+  // Update currentY after totals table
+  currentY = (doc as any).lastAutoTable.finalY + 20;
+
+  // ========================================================================
   // LAST PAGE: TERMS & CONDITIONS
   // ========================================================================
 

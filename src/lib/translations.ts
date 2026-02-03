@@ -69,6 +69,11 @@ export interface Translations {
   terms: string;
   termsText1: string;
   termsText2: string;
+
+  // Totals overview
+  totals: string;
+  totalExclVat: string;
+  totalInclVat: string;
 }
 
 export const translations: Record<Language, Translations> = {
@@ -141,6 +146,11 @@ export const translations: Record<Language, Translations> = {
     terms: 'Voorwaarden',
     termsText1: 'Op deze aanbieding zijn de UAV 2012 van toepassing met onderstaande afwijkingen:',
     termsText2: 'In het geval dat bepalingen in deze offerte strijdig zijn met bepalingen uit een eerder gesloten raamovereenkomst met dezelfde opdrachtgever, prevaleren de bepalingen uit de raamovereenkomst.',
+
+    // Totals overview
+    totals: 'Totalen:',
+    totalExclVat: 'Totaal excl. BTW',
+    totalInclVat: 'Totaal Incl. BTW',
   },
   en: {
     // Page 1-2 Labels
@@ -211,6 +221,11 @@ export const translations: Record<Language, Translations> = {
     terms: 'Terms and Conditions',
     termsText1: 'The UAV 2012 applies to this offer with the following exceptions:',
     termsText2: 'In the event that provisions in this quote conflict with provisions from a previously concluded framework agreement with the same client, the provisions from the framework agreement shall prevail.',
+
+    // Totals overview
+    totals: 'Totals:',
+    totalExclVat: 'Total excl. VAT',
+    totalInclVat: 'Total Incl. VAT',
   },
 };
 
