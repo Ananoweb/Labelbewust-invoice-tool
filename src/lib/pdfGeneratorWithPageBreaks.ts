@@ -200,9 +200,11 @@ const createPages1And2HTML = (projectDetails: ProjectDetails, t: Translations): 
           <h2 style="color: #15803d; font-size: 16px; font-weight: bold; margin: 0 0 8px 0;">
             ${projectDetails.clientName}
           </h2>
-          <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">${projectDetails.email}</p>
+          <p style="color: black; font-weight: bold; margin: 0; padding: 0; font-size: 9px;">${t.email}</p>
+          <p style="color: #374151; margin: 0 0 4px 0; padding: 0; font-size: 9px;">${projectDetails.email}</p>
+          <p style="color: black; font-weight: bold; margin: 0; padding: 0; font-size: 9px;">${t.phoneNumber}</p>
           <p style="color: #374151; letter-spacing: 0.05em; margin: 0; padding: 0; font-size: 9px;">${projectDetails.phone}</p>
-          <p style="color: #374151; margin: 16px 0 0 0; padding: 0; font-size: 9px;">
+          <p style="color: #374151; margin: 12px 0 0 0; padding: 0; font-size: 9px;">
             ${t.quoteNumber} ${projectDetails.invoiceNumber}
           </p>
           <p style="color: #374151; margin: 0; padding: 0; letter-spacing: 0.05em; font-size: 9px;">${projectDetails.date}</p>

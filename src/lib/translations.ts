@@ -6,6 +6,7 @@ export interface Translations {
   name: string;
   email: string;
   phone: string;
+  phoneNumber: string;
   projectDetails: string;
   date: string;
   quoteNumber: string;
@@ -63,6 +64,7 @@ export const translations: Record<Language, Translations> = {
     name: 'Naam',
     email: 'Email',
     phone: 'Telefoon',
+    phoneNumber: 'Telefoonnummer',
     projectDetails: 'Project details',
     date: 'Datum',
     quoteNumber: 'Offertenummer',
@@ -118,6 +120,7 @@ export const translations: Record<Language, Translations> = {
     name: 'Name',
     email: 'Email',
     phone: 'Phone',
+    phoneNumber: 'Phone number',
     projectDetails: 'Project details',
     date: 'Date',
     quoteNumber: 'Quote number',
