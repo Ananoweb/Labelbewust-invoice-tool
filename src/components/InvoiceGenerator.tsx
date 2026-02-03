@@ -810,7 +810,7 @@ export default function InvoiceGenerator() {
 
   const [sections, setSections] = useState<Section[]>([
     {
-      id: "0.00",
+      id: "01.00",
       title: "Voor het werk geldende voorwaarden uav 2012",
       items: [],
       vatRate: 0,
@@ -850,7 +850,7 @@ export default function InvoiceGenerator() {
   };
   const deleteSection = (sectionId: string) => {
     // Prevent deleting the first section
-    if (sectionId === "0.00") return;
+    if (sectionId === "01.00") return;
 
     if (
       confirm("Weet je zeker dat je deze sectie en alle items wilt verwijderen?")
@@ -993,7 +993,7 @@ export default function InvoiceGenerator() {
             {/* <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3> */}
             <div className="flex justify-between items-start">
               <h3 className="text-lg font-bold mb-4">Sectie {section.id}</h3>
-              {section.id !== "0.00" && (
+              {section.id !== "01.00" && (
                 <button
                   onClick={() => deleteSection(section.id)}
                   className="transition-all duration-200 ease-in-out transform hover:scale-110 text-red-500 hover:text-red-600 p-1"
