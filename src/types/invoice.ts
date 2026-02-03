@@ -26,6 +26,8 @@
 // new
 
 // src/types/invoice.ts
+import type { Language } from '../lib/translations';
+
 export interface Item {
   id: number;
   description: string;
@@ -54,4 +56,5 @@ export interface ProjectDetails {
   headerImages: string[];
   richTextContent: any; // EditorState type is complex
   richTextHTML?: string;
+  language?: Language;
 }

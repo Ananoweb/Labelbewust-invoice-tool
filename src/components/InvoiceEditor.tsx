@@ -3,6 +3,7 @@
 // src/components/InvoiceEditor.tsx
 "use client";
 import { generateInvoicePDF } from "@/lib/pdfGeneratorWithPageBreaks";
+import type { Language } from "@/lib/translations";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
@@ -60,6 +61,7 @@ interface ProjectDetails {
   validity: string;
   headerImages: string[];
   richTextHTML: string;
+  language?: Language;
 }
 
 interface InvoiceEditorProps {
@@ -622,6 +624,22 @@ export default function InvoiceEditor({
                 }))
               }
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">PDF Taal</label>
+            <select
+              className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              value={projectDetails.language || 'nl'}
+              onChange={(e) =>
+                setProjectDetails((prev) => ({
+                  ...prev,
+                  language: e.target.value as Language,
+                }))
+              }
+            >
+              <option value="nl">Nederlands</option>
+              <option value="en">English</option>
+            </select>
           </div>
         </div>
 

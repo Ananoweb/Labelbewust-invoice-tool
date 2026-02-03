@@ -1,5 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { getTranslations, type Language, type Translations } from './translations';
 
 // Import images as base64 or paths
 import headerLogoImage from '../image/header_logo.png';
@@ -44,6 +45,7 @@ interface ProjectDetails {
   validity: string;
   headerImages: string[];
   richTextHTML?: string;
+  language?: Language;
 }
 
 /**
@@ -66,7 +68,7 @@ const getImageDataUrl = async (imageSrc: any): Promise<string> => {
 /**
  * Helper function to create HTML for pages 1-2 (using original ReportTemplate style)
  */
-const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
+const createPages1And2HTML = (projectDetails: ProjectDetails, t: Translations): string => {
   const headerShapeSrc = typeof headerShapeImage === 'string' ? headerShapeImage : headerShapeImage.src;
   const headerLogoSrc = typeof headerLogoImage === 'string' ? headerLogoImage : headerLogoImage.src;
   const noImageSrc = typeof noImage === 'string' ? noImage : noImage.src;
@@ -102,38 +104,38 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         <!-- Project Details -->
         <div style="display: flex;  padding-left: 8px;">
           <div style="flex: 1; background-color: white; padding: 0 16px 0 16px; height: 231px;">
-            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0 0 8px 0;">Project adres</h4>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0 0 8px 0;">${t.projectAddress}</h4>
             <h2 style="color: #257044; font-size: 20px; font-weight: bold; line-height: 24px; margin: 0 0 20px 0;">
               ${projectDetails.projectAddress}
             </h2>
-            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Naam</h4>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">${t.name}</h4>
             <h4 style="color: #36a965; font-weight: bold; margin: 0 0 12px 0; font-size: 14px;">
               ${projectDetails.clientName}
             </h4>
-            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Email</h4>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">${t.email}</h4>
             <p style="font-size: 12px; color: #374151; margin: 0 0 12px 0; padding: 0;">${projectDetails.email}</p>
-            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">Telefoon</h4>
+            <h4 style="color: black; font-weight: bold; font-size: 10px; margin: 0;">${t.phone}</h4>
             <p style="font-size: 12px; letter-spacing: 0.05em; color: #374151; margin: 0; padding: 0;">${projectDetails.phone}</p>
           </div>
           <div style="flex: 1; background-color: #f9f9f9; padding: 0 16px 0 24px; height: 231px;">
             <h2 style="color: black; font-size: 20px; font-weight: bold; line-height: 24px; margin: 16px 0 24px 0; text-align: center;">
-              Project details
+              ${t.projectDetails}
             </h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Datum</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.date}</div>
                 <div style="font-size: 11px; color: #36a965; letter-spacing: 0.05em; word-wrap: break-word; white-space: normal;">${projectDetails.date}</div>
               </div>
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Offertenummer</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.quoteNumber}</div>
                 <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${projectDetails.invoiceNumber}</div>
               </div>
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Kenmerk</div>
-                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">Totaalrenovatie ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.reference}</div>
+                <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${t.totalRenovation} ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}</div>
               </div>
               <div>
-                <div style="color: black; font-size: 11px; font-weight: bold;">Geldigheid</div>
+                <div style="color: black; font-size: 11px; font-weight: bold;">${t.validity}</div>
                 <div style="font-size: 11px; color: #36a965; word-wrap: break-word; white-space: normal;">${projectDetails.validity}</div>
               </div>
             </div>
@@ -144,26 +146,26 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           <img src="${bannerSrc}" alt="Banner" style="height: 330px; width: 100%; object-fit: cover;" />
           <div style="position: absolute; left: 16px; top: 48px;">
             <h2 style="font-weight: bold; font-size: 20px; margin-bottom: 4px; color: white;">
-               De aannemer van Nederland
+               ${t.companySlogan}
             </h2>
             <ul style="list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; font-size: 12px; margin: 0;">
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Ruwbouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.roughConstruction}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Totaalrenovatie
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.totalRenovation}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Sloopwerk
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.demolitionWork}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Nieuwbouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.newConstruction}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Staaframe bouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.steelFrameConstruction}
               </li>
               <li style="display: flex; align-items: center; margin-bottom: 8px; color: white; font-weight: 600;">
-                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> Hallenbouw
+                <span style="color: #4ade80; margin-right: 8px; font-size: 12px;">✓</span> ${t.hallConstruction}
               </li>
             </ul>
           </div>
@@ -174,7 +176,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
               Labelbewust
             </span>
             <span style="font-weight: bold; font-size: 11px; position: absolute; right: 24px; bottom: 15px; color: white; z-index: 30;">
-              Een aannemer op wie je kunt bouwen
+              ${t.companyTagline}
             </span>
           </div>
         </div>
@@ -190,7 +192,7 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         <img src="${headerWhiteLogoSrc}" alt="Banner" style="height: 56px; width: 160px; position: absolute; top: 8px; left: 16px;" />
         <img src="${triSquareRevSrc}" alt="Banner" style="height: 80px; width: 80px; object-fit: contain; position: absolute; top: -4px; right: -8px;" />
         <span style="color: #257044; font-size: 30px; font-weight: bold; position: absolute; left: 280px; top: 2px; letter-spacing: 0.05em;">
-          OFFERTE
+          ${t.quote}
         </span>
       </header>
       <section style="max-width: 595px; width: 100%; background-color: white; padding-top: 8px; word-break: break-all; position: relative; height: calc(842px - 80px);">
@@ -201,16 +203,16 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
           <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">${projectDetails.email}</p>
           <p style="color: #374151; letter-spacing: 0.05em; margin: 0; padding: 0; font-size: 9px;">${projectDetails.phone}</p>
           <p style="color: #374151; margin: 16px 0 0 0; padding: 0; font-size: 9px;">
-            Offertenummer ${projectDetails.invoiceNumber}
+            ${t.quoteNumber} ${projectDetails.invoiceNumber}
           </p>
           <p style="color: #374151; margin: 0; padding: 0; letter-spacing: 0.05em; font-size: 9px;">${projectDetails.date}</p>
           <p style="color: #374151; margin: 0; padding: 0; font-size: 9px;">
-            Totaalrenovatie ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}
+            ${t.totalRenovation} ${(projectDetails.projectAddress || '').trim().replace(/\s+/g, ' ')}
           </p>
         </div>
         <div style="padding-top: 8px; padding-right: 24px; padding-bottom: 0; padding-left: 24px; min-height: 425px;">
           <h1 style="font-size: 9px; font-weight: bold; color: #111827; margin: 0 0 4px 0;">
-            Werkzaamheden opgenomen in deze offerte
+            ${t.workIncludedInQuote}
           </h1>
           <div style="font-size: 9px; color: #374151;">
             ${projectDetails.richTextHTML || ''}
@@ -219,27 +221,26 @@ const createPages1And2HTML = (projectDetails: ProjectDetails): string => {
         <!-- Signature -->
         <div style="padding: 8px 24px; font-size: 9px;">
           <p style="margin: 0 0 8px 0;">
-            Door ondertekening van deze offerte komt de aannemingsovereenkomst
-            tot stand.
+            ${t.signatureText}
           </p>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 8px;">
             <div>
-              <p style="margin: 0;">Met vriendelijke groet</p>
-              <p style="margin: 0;">Verkoopteam Labelbewust</p>
+              <p style="margin: 0;">${t.kindRegards}</p>
+              <p style="margin: 0;">${t.salesTeam}</p>
             </div>
             <div>
-              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">Datum:</p>
-              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">Plaats:</p>
-              <p style="padding-bottom: 12px; margin: 0;">Handtekening:</p>
+              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">${t.dateLabel}</p>
+              <p style="border-bottom: 1px solid black; padding-bottom: 12px; margin: 0;">${t.placeLabel}</p>
+              <p style="padding-bottom: 12px; margin: 0;">${t.signatureLabel}</p>
             </div>
           </div>
         </div>
         <div style="position: absolute; bottom: -5px; left: 0; width: 100%; z-index: 20;">
           <img src="${triSquareFooterSrc}" alt="Banner" style="object-fit: cover; height: auto; width: 80%; margin-left: -16px;" />
           <div style="width: 80%; display: flex; gap: 55px; font-weight: bold; font-size: 11px; position: absolute; color: white; z-index: 30; bottom: 6px; padding-left: 20px; font-size: 14px>
-            <p>Renovatie</p>
-            <p>Verduurzaming</p>
-            <p>Nieuwbouw</p>
+            <p>${t.renovation}</p>
+            <p>${t.sustainability}</p>
+            <p>${t.newConstruction}</p>
           </div>
         </div>
       </section>
@@ -255,6 +256,10 @@ export const generateInvoicePDF = async (
   projectDetails: ProjectDetails,
   sections: Section[]
 ): Promise<jsPDF> => {
+  // Get translations based on language (default to Dutch)
+  const language = projectDetails.language || 'nl';
+  const t = getTranslations(language);
+
   const doc = new jsPDF({
     format: 'a4',
     unit: 'px',
@@ -309,11 +314,11 @@ export const generateInvoicePDF = async (
       console.warn('Could not load header images:', error);
     }
 
-    // Add "OFFERTE" text
+    // Add "OFFERTE" / "QUOTE" text
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(30);
     doc.setTextColor(37, 112, 68); // #257044
-    doc.text('OFFERTE', pageWidth /2, headerStartY + 42);
+    doc.text(t.quote, pageWidth /2, headerStartY + 42);
 
     currentY = headerHeight + margin; // Set currentY to after header plus margin
   };
@@ -323,7 +328,7 @@ export const generateInvoicePDF = async (
   // ========================================================================
 
   // Create HTML for pages 1 and 2
-  const pages1And2HTML = createPages1And2HTML(projectDetails);
+  const pages1And2HTML = createPages1And2HTML(projectDetails, t);
 
   // Create a temporary div and render HTML to PDF
   if (typeof window !== 'undefined') {
@@ -375,11 +380,11 @@ export const generateInvoicePDF = async (
     const tableHead = [
       [
         `${section.id} ${section.title}`,
-        'Aantal',
-        'Eenheid',
-        'Prijs',
-        'Subtotaal',
-        'BTW'
+        t.quantity,
+        t.unit,
+        t.price,
+        t.subtotal,
+        t.vat
       ]
     ];
 
@@ -399,7 +404,7 @@ export const generateInvoicePDF = async (
 
     // Add subtotal row
     tableBody.push([
-      { content: 'Subtotaal', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: t.subtotal, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
       `€ ${section.calculations.subtotal.toFixed(2)}`,
       ''
     ]);
@@ -407,7 +412,7 @@ export const generateInvoicePDF = async (
     // Add VAT detail rows
     Object.entries(section.calculations.vatDetails).forEach(([rate, amount]) => {
       tableBody.push([
-        { content: `VAT (${rate}%):`, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+        { content: `${t.vatPercent} (${rate}%):`, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
         `€ ${amount.toFixed(2)}`,
         ''
       ]);
@@ -415,7 +420,7 @@ export const generateInvoicePDF = async (
 
     // Add total row
     tableBody.push([
-      { content: 'Subtotaal incl. BTW', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: t.subtotalInclVat, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
       `€ ${section.calculations.total.toFixed(2)}`,
       ''
     ]);
@@ -471,19 +476,21 @@ export const generateInvoicePDF = async (
   doc.setFontSize(9);
   doc.setTextColor(0, 0, 0);
 
-  doc.text('Voorwaarden', margin + 6, currentY);
+  doc.text(t.terms, margin + 6, currentY);
   currentY += 15;
 
-  const terms = [
-    'Op deze aanbieding zijn de UAV 2012 van toepassing met onderstaande',
-    'afwijkingen:',
-    '',
-    'In het geval dat bepalingen in deze offerte strijdig zijn met',
-    'bepalingen uit een eerder gesloten raamovereenkomst met dezelfde',
-    'opdrachtgever, prevaleren de bepalingen uit de raamovereenkomst.',
-  ];
+  // Split terms text into lines that fit the page width
+  const termsText1Lines = doc.splitTextToSize(t.termsText1, pageWidth - margin * 2 - 12);
+  const termsText2Lines = doc.splitTextToSize(t.termsText2, pageWidth - margin * 2 - 12);
 
-  terms.forEach((line) => {
+  termsText1Lines.forEach((line: string) => {
+    doc.text(line, margin + 6, currentY);
+    currentY += 12;
+  });
+
+  currentY += 6; // Add some spacing between paragraphs
+
+  termsText2Lines.forEach((line: string) => {
     doc.text(line, margin + 6, currentY);
     currentY += 12;
   });

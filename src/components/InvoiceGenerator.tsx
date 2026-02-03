@@ -10,6 +10,7 @@ import { Plus, Trash2, Download, Upload, Save, X } from "lucide-react";
 import jsPDF from "jspdf";
 import ReportTemplate from "./ReportTemplate";
 import { generateInvoicePDF } from "@/lib/pdfGeneratorWithPageBreaks";
+import type { Language } from "@/lib/translations";
 import { EditorState } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { stateToHTML } from "draft-js-export-html";
@@ -61,6 +62,7 @@ interface ProjectDetails {
   headerImages: string[];
   richTextContent: EditorState;
   richTextHTML?: string;
+  language: Language;
 }
 
 interface ProjectDetailsFormProps {
@@ -300,6 +302,19 @@ const ProjectDetailsForm: React.FC<ProjectDetailsFormProps> = ({
               setProjectDetails({ ...projectDetails, validity: e.target.value })
             }
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">PDF Taal</label>
+          <select
+            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+            value={projectDetails.language}
+            onChange={(e) =>
+              setProjectDetails({ ...projectDetails, language: e.target.value as Language })
+            }
+          >
+            <option value="nl">Nederlands</option>
+            <option value="en">English</option>
+          </select>
         </div>
       </div>
 
@@ -824,6 +839,7 @@ export default function InvoiceGenerator() {
     validity: "",
     headerImages: [],
     richTextContent: EditorState.createEmpty(),
+    language: "nl",
   });
 
   const convertRichTextToHTML = () => {
