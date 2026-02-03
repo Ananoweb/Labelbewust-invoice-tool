@@ -5,6 +5,8 @@
 import { useEffect, useRef } from "react";
 import React, { useState } from "react";
 import { Input } from "./ui/input";
+import { AutocompleteInput } from "./ui/AutocompleteInput";
+import { useAutocomplete } from "@/hooks/useAutocomplete";
 import { Button } from "./ui/button";
 import { Plus, Trash2, Download, Upload, Save, X } from "lucide-react";
 import jsPDF from "jspdf";
@@ -360,6 +362,10 @@ export default function InvoiceGenerator() {
 
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
+
+  // Autocomplete hooks for section titles and item descriptions
+  const titleAutocomplete = useAutocomplete('titles');
+  const descriptionAutocomplete = useAutocomplete('descriptions');
 
   // Add this state to your component
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -1004,16 +1010,20 @@ export default function InvoiceGenerator() {
               )}
             </div>
             <div className="mb-4">
-              <Input
+              <AutocompleteInput
                 placeholder="Sectie Titel"
                 value={section.title}
-                onChange={(e) =>
+                onChange={(value) =>
                   setSections(
                     sections.map((s) =>
-                      s.id === section.id ? { ...s, title: e.target.value } : s
+                      s.id === section.id ? { ...s, title: value } : s
                     )
                   )
                 }
+                suggestions={titleAutocomplete.suggestions}
+                onSaveSuggestion={titleAutocomplete.saveSuggestion}
+                onRemoveSuggestion={titleAutocomplete.removeSuggestion}
+                getFilteredSuggestions={titleAutocomplete.getFilteredSuggestions}
               />
             </div>
 
@@ -1032,16 +1042,21 @@ export default function InvoiceGenerator() {
                 {section.items.map((item) => (
                   <tr key={item.id} className="border-b">
                     <td className="py-2">
-                      <Input
+                      <AutocompleteInput
                         value={item.description}
-                        onChange={(e) =>
+                        onChange={(value) =>
                           updateItem(
                             section.id,
                             item.id,
                             "description",
-                            e.target.value
+                            value
                           )
                         }
+                        placeholder="Omschrijving"
+                        suggestions={descriptionAutocomplete.suggestions}
+                        onSaveSuggestion={descriptionAutocomplete.saveSuggestion}
+                        onRemoveSuggestion={descriptionAutocomplete.removeSuggestion}
+                        getFilteredSuggestions={descriptionAutocomplete.getFilteredSuggestions}
                       />
                     </td>
                     <td className="py-2">
