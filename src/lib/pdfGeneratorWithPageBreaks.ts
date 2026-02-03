@@ -393,7 +393,6 @@ export const generateInvoicePDF = async (
       [
         `${section.id} ${section.title}`,
         t.quantity,
-        t.unit,
         t.price,
         t.subtotal,
         t.vat
@@ -407,7 +406,6 @@ export const generateInvoicePDF = async (
       tableBody.push([
         item.description || ' ',
         item.quantity?.toString() || '-',
-        item.unit || '-',
         `€ ${item.price?.toFixed(2) || '-'}`,
         `€ ${(item.quantity * item.price)?.toFixed(2) || '-'}`,
         `${item.vatRate}%`
@@ -416,7 +414,7 @@ export const generateInvoicePDF = async (
 
     // Add subtotal row
     tableBody.push([
-      { content: t.subtotal, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: t.subtotal, colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
       `€ ${section.calculations.subtotal.toFixed(2)}`,
       ''
     ]);
@@ -424,7 +422,7 @@ export const generateInvoicePDF = async (
     // Add VAT detail rows
     Object.entries(section.calculations.vatDetails).forEach(([rate, amount]) => {
       tableBody.push([
-        { content: `${t.vatPercent} (${rate}%):`, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+        { content: `${t.vatPercent} (${rate}%):`, colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
         `€ ${amount.toFixed(2)}`,
         ''
       ]);
@@ -432,7 +430,7 @@ export const generateInvoicePDF = async (
 
     // Add total row
     tableBody.push([
-      { content: t.subtotalInclVat, colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+      { content: t.subtotalInclVat, colSpan: 3, styles: { halign: 'right', fontStyle: 'bold' } },
       `€ ${section.calculations.total.toFixed(2)}`,
       ''
     ]);
@@ -455,12 +453,11 @@ export const generateInvoicePDF = async (
         halign: 'left',
       },
       columnStyles: {
-        0: { cellWidth: 200, fontStyle: 'normal', fillColor: undefined, textColor: [0, 0, 0] },
+        0: { cellWidth: 260, fontStyle: 'normal', fillColor: undefined, textColor: [0, 0, 0] },
         1: { cellWidth: 50, halign: 'left', textColor: [54, 169, 101] },
         2: { cellWidth: 60, halign: 'left', textColor: [54, 169, 101] },
-        3: { cellWidth: 60, halign: 'left', textColor: [54, 169, 101] },
-        4: { cellWidth: 80, halign: 'left', textColor: [54, 169, 101] },
-        5: { cellWidth: 45, halign: 'left', textColor: [54, 169, 101] },
+        3: { cellWidth: 80, halign: 'left', textColor: [54, 169, 101] },
+        4: { cellWidth: 45, halign: 'left', textColor: [54, 169, 101] },
       },
       margin: { left: margin, right: margin, top: 10, bottom: margin },
       pageBreak: 'auto',
